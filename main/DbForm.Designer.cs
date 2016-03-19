@@ -58,20 +58,20 @@
             this.DbDeleteBox = new System.Windows.Forms.GroupBox();
             this.DbDeleteRoute = new System.Windows.Forms.RadioButton();
             this.DbDeleteCity = new System.Windows.Forms.RadioButton();
-            this.DbShowResultTimer = new System.Windows.Forms.Timer(this.components);
-            this.DbActionResult = new System.Windows.Forms.StatusStrip();
-            this.DbActionSuccessLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.DbCitiesTab = new System.Windows.Forms.TabPage();
             this.DbRoutesTab = new System.Windows.Forms.TabPage();
-            this.DbLogTab = new System.Windows.Forms.TabPage();
-            this.DbClearLog = new System.Windows.Forms.Button();
-            this.DbLogText = new System.Windows.Forms.RichTextBox();
             this.DbRoutesDataGrid = new System.Windows.Forms.DataGridView();
             this.DbRoutesColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbRoutesColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbRoutesColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbRoutesColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbRoutesColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbLogTab = new System.Windows.Forms.TabPage();
+            this.DbLogText = new System.Windows.Forms.RichTextBox();
+            this.DbClearLog = new System.Windows.Forms.Button();
+            this.DbShowResultTimer = new System.Windows.Forms.Timer(this.components);
+            this.DbActionResult = new System.Windows.Forms.StatusStrip();
+            this.DbActionSuccessLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.DbActionErrorLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.DbTabs.SuspendLayout();
             this.DbAddTab.SuspendLayout();
@@ -79,10 +79,10 @@
             this.DbAddBox.SuspendLayout();
             this.DbDeleteTab.SuspendLayout();
             this.DbDeleteBox.SuspendLayout();
-            this.DbActionResult.SuspendLayout();
             this.DbRoutesTab.SuspendLayout();
-            this.DbLogTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DbRoutesDataGrid)).BeginInit();
+            this.DbLogTab.SuspendLayout();
+            this.DbActionResult.SuspendLayout();
             this.SuspendLayout();
             // 
             // AddCityButton
@@ -415,28 +415,6 @@
             this.DbDeleteCity.Text = "Город";
             this.DbDeleteCity.UseVisualStyleBackColor = true;
             // 
-            // DbShowResultTimer
-            // 
-            this.DbShowResultTimer.Interval = 2500;
-            this.DbShowResultTimer.Tick += new System.EventHandler(this.DbShowResultTimer_Tick);
-            // 
-            // DbActionResult
-            // 
-            this.DbActionResult.BackColor = System.Drawing.SystemColors.Window;
-            this.DbActionResult.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.DbActionSuccessLabel,
-            this.DbActionErrorLabel});
-            this.DbActionResult.Location = new System.Drawing.Point(0, 297);
-            this.DbActionResult.Name = "DbActionResult";
-            this.DbActionResult.Size = new System.Drawing.Size(333, 22);
-            this.DbActionResult.SizingGrip = false;
-            this.DbActionResult.TabIndex = 9;
-            // 
-            // DbActionSuccessLabel
-            // 
-            this.DbActionSuccessLabel.Name = "DbActionSuccessLabel";
-            this.DbActionSuccessLabel.Size = new System.Drawing.Size(0, 17);
-            // 
             // DbCitiesTab
             // 
             this.DbCitiesTab.Location = new System.Drawing.Point(4, 22);
@@ -456,43 +434,12 @@
             this.DbRoutesTab.Text = "Дороги";
             this.DbRoutesTab.UseVisualStyleBackColor = true;
             // 
-            // DbLogTab
-            // 
-            this.DbLogTab.Controls.Add(this.DbLogText);
-            this.DbLogTab.Controls.Add(this.DbClearLog);
-            this.DbLogTab.Location = new System.Drawing.Point(4, 22);
-            this.DbLogTab.Name = "DbLogTab";
-            this.DbLogTab.Size = new System.Drawing.Size(329, 274);
-            this.DbLogTab.TabIndex = 4;
-            this.DbLogTab.Text = "История";
-            this.DbLogTab.UseVisualStyleBackColor = true;
-            // 
-            // DbClearLog
-            // 
-            this.DbClearLog.AutoSize = true;
-            this.DbClearLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbClearLog.Location = new System.Drawing.Point(125, 240);
-            this.DbClearLog.Name = "DbClearLog";
-            this.DbClearLog.Size = new System.Drawing.Size(80, 26);
-            this.DbClearLog.TabIndex = 0;
-            this.DbClearLog.Text = "Очистить";
-            this.DbClearLog.UseVisualStyleBackColor = true;
-            this.DbClearLog.Click += new System.EventHandler(this.DbClearLog_Click);
-            // 
-            // DbLogText
-            // 
-            this.DbLogText.Location = new System.Drawing.Point(0, 0);
-            this.DbLogText.MaxLength = 10000;
-            this.DbLogText.Name = "DbLogText";
-            this.DbLogText.Size = new System.Drawing.Size(329, 235);
-            this.DbLogText.TabIndex = 1;
-            this.DbLogText.Text = "";
-            this.DbLogText.WordWrap = false;
-            // 
             // DbRoutesDataGrid
             // 
             this.DbRoutesDataGrid.AllowUserToAddRows = false;
             this.DbRoutesDataGrid.AllowUserToDeleteRows = false;
+            this.DbRoutesDataGrid.AllowUserToResizeColumns = false;
+            this.DbRoutesDataGrid.AllowUserToResizeRows = false;
             this.DbRoutesDataGrid.BackgroundColor = System.Drawing.SystemColors.Window;
             this.DbRoutesDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DbRoutesDataGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -505,6 +452,7 @@
             this.DbRoutesDataGrid.Location = new System.Drawing.Point(0, 0);
             this.DbRoutesDataGrid.Name = "DbRoutesDataGrid";
             this.DbRoutesDataGrid.ReadOnly = true;
+            this.DbRoutesDataGrid.RowHeadersVisible = false;
             this.DbRoutesDataGrid.RowHeadersWidth = 15;
             this.DbRoutesDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.DbRoutesDataGrid.Size = new System.Drawing.Size(328, 274);
@@ -518,7 +466,7 @@
             this.DbRoutesColumn1.ReadOnly = true;
             this.DbRoutesColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.DbRoutesColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.DbRoutesColumn1.Width = 89;
+            this.DbRoutesColumn1.Width = 97;
             // 
             // DbRoutesColumn2
             // 
@@ -528,7 +476,7 @@
             this.DbRoutesColumn2.ReadOnly = true;
             this.DbRoutesColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.DbRoutesColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.DbRoutesColumn2.Width = 89;
+            this.DbRoutesColumn2.Width = 96;
             // 
             // DbRoutesColumn3
             // 
@@ -559,6 +507,61 @@
             this.DbRoutesColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.DbRoutesColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.DbRoutesColumn5.Width = 45;
+            // 
+            // DbLogTab
+            // 
+            this.DbLogTab.Controls.Add(this.DbLogText);
+            this.DbLogTab.Controls.Add(this.DbClearLog);
+            this.DbLogTab.Location = new System.Drawing.Point(4, 22);
+            this.DbLogTab.Name = "DbLogTab";
+            this.DbLogTab.Size = new System.Drawing.Size(329, 274);
+            this.DbLogTab.TabIndex = 4;
+            this.DbLogTab.Text = "История";
+            this.DbLogTab.UseVisualStyleBackColor = true;
+            // 
+            // DbLogText
+            // 
+            this.DbLogText.Location = new System.Drawing.Point(0, 0);
+            this.DbLogText.MaxLength = 10000;
+            this.DbLogText.Name = "DbLogText";
+            this.DbLogText.Size = new System.Drawing.Size(329, 235);
+            this.DbLogText.TabIndex = 1;
+            this.DbLogText.Text = "";
+            this.DbLogText.WordWrap = false;
+            // 
+            // DbClearLog
+            // 
+            this.DbClearLog.AutoSize = true;
+            this.DbClearLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbClearLog.Location = new System.Drawing.Point(125, 240);
+            this.DbClearLog.Name = "DbClearLog";
+            this.DbClearLog.Size = new System.Drawing.Size(80, 26);
+            this.DbClearLog.TabIndex = 0;
+            this.DbClearLog.Text = "Очистить";
+            this.DbClearLog.UseVisualStyleBackColor = true;
+            this.DbClearLog.Click += new System.EventHandler(this.DbClearLog_Click);
+            // 
+            // DbShowResultTimer
+            // 
+            this.DbShowResultTimer.Interval = 2500;
+            this.DbShowResultTimer.Tick += new System.EventHandler(this.DbShowResultTimer_Tick);
+            // 
+            // DbActionResult
+            // 
+            this.DbActionResult.BackColor = System.Drawing.SystemColors.Window;
+            this.DbActionResult.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DbActionSuccessLabel,
+            this.DbActionErrorLabel});
+            this.DbActionResult.Location = new System.Drawing.Point(0, 297);
+            this.DbActionResult.Name = "DbActionResult";
+            this.DbActionResult.Size = new System.Drawing.Size(333, 22);
+            this.DbActionResult.SizingGrip = false;
+            this.DbActionResult.TabIndex = 9;
+            // 
+            // DbActionSuccessLabel
+            // 
+            this.DbActionSuccessLabel.Name = "DbActionSuccessLabel";
+            this.DbActionSuccessLabel.Size = new System.Drawing.Size(0, 17);
             // 
             // DbActionErrorLabel
             // 
@@ -593,12 +596,12 @@
             this.DbDeleteTab.PerformLayout();
             this.DbDeleteBox.ResumeLayout(false);
             this.DbDeleteBox.PerformLayout();
-            this.DbActionResult.ResumeLayout(false);
-            this.DbActionResult.PerformLayout();
             this.DbRoutesTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.DbRoutesDataGrid)).EndInit();
             this.DbLogTab.ResumeLayout(false);
             this.DbLogTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DbRoutesDataGrid)).EndInit();
+            this.DbActionResult.ResumeLayout(false);
+            this.DbActionResult.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -644,11 +647,11 @@
         private System.Windows.Forms.TabPage DbLogTab;
         private System.Windows.Forms.RichTextBox DbLogText;
         private System.Windows.Forms.Button DbClearLog;
+        private System.Windows.Forms.ToolStripStatusLabel DbActionErrorLabel;
         private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn1;
-        private System.Windows.Forms.ToolStripStatusLabel DbActionErrorLabel;
     }
 }

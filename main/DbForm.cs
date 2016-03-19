@@ -40,6 +40,7 @@ namespace main
             for (int i = 0; i < parent.routes.Count; i++)
             {
                 DbDeleteRouteSelector.Items.Add(parent.routes[i].FirstCity + " - " + parent.routes[i].SecondCity + "(" + parent.routes[i].Options[0] + "," + parent.routes[i].Options[1] + "," + parent.routes[i].Options[2] + ")");
+                DbRoutesDataGrid.Rows.Add(parent.routes[i].FirstCity, parent.routes[i].SecondCity, parent.routes[i].Options[0], parent.routes[i].Options[1], parent.routes[i].Options[2]);
             }
             DbAddRouteEndSelector.SelectedIndex = -1;
             DbAddRouteStartSelector.SelectedIndex = -1;
