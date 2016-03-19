@@ -239,7 +239,7 @@ namespace main
                 }
                 else
                 {
-                    DbActionErrorLabel.Text = "Укажите начало и конец дороги";
+                    DbActionErrorLabel.Text = "Ошибка: укажите начало и конец дороги";
                     db_show_error();
                 }
             }
