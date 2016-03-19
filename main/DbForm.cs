@@ -31,6 +31,7 @@ namespace main
             DbAddRouteStartSelector.Items.Clear();
             DbDeleteCitySelector.Items.Clear();
             DbDeleteRouteSelector.Items.Clear();
+            DbRoutesDataGrid.Rows.Clear();
             for (int i = 0; i < parent.cities.Count; i++)
             { 
                 DbAddRouteStartSelector.Items.Add(parent.cities[i]);
@@ -39,7 +40,7 @@ namespace main
             }
             for (int i = 0; i < parent.routes.Count; i++)
             {
-                DbDeleteRouteSelector.Items.Add(parent.routes[i].FirstCity + " - " + parent.routes[i].SecondCity + "(" + parent.routes[i].Options[0] + "," + parent.routes[i].Options[1] + "," + parent.routes[i].Options[2] + ")");
+                DbDeleteRouteSelector.Items.Add(parent.routes[i].FirstCity + " - " + parent.routes[i].SecondCity + " (" + parent.routes[i].Options[0] + "," + parent.routes[i].Options[1] + "," + parent.routes[i].Options[2] + ")");
                 DbRoutesDataGrid.Rows.Add(parent.routes[i].FirstCity, parent.routes[i].SecondCity, parent.routes[i].Options[0], parent.routes[i].Options[1], parent.routes[i].Options[2]);
             }
             DbAddRouteEndSelector.SelectedIndex = -1;
@@ -202,10 +203,11 @@ namespace main
                             {
                                 DbDeleteRouteSelector.Items.Add(parent.routes.Last().FirstCity + " - " + parent.routes.Last().SecondCity);
                                 DbActionSuccessLabel.Text = "Добавлено: " + DbAddRouteStartSelector.SelectedItem.ToString() + " - " + DbAddRouteEndSelector.SelectedItem.ToString() + "(" + DbAddRouteLenght.Text + ", " + DbAddRouteTime.Text + ", " + DbAddRouteCost.Text + ")";
+                                time = DateTime.Now;
                                 string tmp = time.Day + "," + time.Month + "," + time.Year + "," + time.Hour + "," + time.Minute + "," + time.Second + ",add,r," + DbAddRouteStartSelector.SelectedItem.ToString() + "," + DbAddRouteEndSelector.SelectedItem.ToString() + "," + DbAddRouteLenght.Text + "," + DbAddRouteTime.Text + "," + DbAddRouteCost.Text;
                                 DbLogWriter.WriteLine(tmp);
                                 log_add_row(tmp);
-                                DbRoutesDataGrid.Rows.Add(DbRoutesDataGrid.Rows.Count, DbAddRouteStartSelector.SelectedItem.ToString(), DbAddRouteEndSelector.SelectedItem.ToString(), DbAddRouteLenght.Text, DbAddRouteTime.Text, DbAddRouteCost.Text);
+                                DbRoutesDataGrid.Rows.Add(DbAddRouteStartSelector.SelectedItem.ToString(), DbAddRouteEndSelector.SelectedItem.ToString(), DbAddRouteLenght.Text, DbAddRouteTime.Text, DbAddRouteCost.Text);
                                 DbAddRouteEndSelector.ResetText();
                                 DbAddRouteEndSelector.SelectedIndex = -1;
                                 DbAddRouteStartSelector.ResetText();
@@ -255,21 +257,22 @@ namespace main
             {
                 if (DbDeleteCitySelector.SelectedIndex >= 0)
                 {
+                    int sizebefore = parent.routes.Count;
                     parent.DeleteCity(DbDeleteCitySelector.SelectedItem.ToString());
-                    DbActionSuccessLabel.Text = "Удалено: " + DbDeleteCitySelector.SelectedItem.ToString();
+                    int sizeafter = parent.routes.Count;
+                    DbActionSuccessLabel.Text = "Удалено: " + DbDeleteCitySelector.SelectedItem.ToString() + " и " + (sizebefore - sizeafter) + " дорог";
                     time = DateTime.Now;
                     string tmp = time.Day + "," + time.Month + "," + time.Year + "," + time.Hour + "," + time.Minute + "," + time.Second + ",del,c," + DbDeleteCitySelector.SelectedItem.ToString();
                     DbLogWriter.WriteLine(tmp);
                     log_add_row(tmp);
-                    DbDeleteResultLabel.ForeColor = Color.Green;
                     DbDeleteCitySelector.ResetText();
                     DbDeleteCitySelector.SelectedIndex = -1;
                     DbRefresh();
                 }
                 else
                 {
-                    DbDeleteResultLabel.Text = "Выберите город";
-                    DbDeleteResultLabel.ForeColor = Color.Red;
+                    DbActionErrorLabel.Text = "Ошибка: выберите город";
+                    db_show_error();
                 }
             }
             if (DbDeleteRoute.Checked)
@@ -277,19 +280,23 @@ namespace main
                 if (DbDeleteRouteSelector.SelectedIndex >= 0)
                 {
                     string[] c = DbDeleteRouteSelector.SelectedItem.ToString().Split(' ');
+                    string[] d = c[3].Substring(1, c[3].Length - 2).Split(',');
                     parent.DeleteRoute(c[0], c[2]);
-                    DbDeleteResultLabel.ForeColor = Color.Green;
-                    DbDeleteResultLabel.Text = "Удалено";
+                    time = DateTime.Now;
+                    string tmp = time.Day + "," + time.Month + "," + time.Year + "," + time.Hour + "," + time.Minute + "," + time.Second + ",del,r," + c[0] + "," + c[2] + "," + d[0] + "," + d[1] + "," + d[2];
+                    DbLogWriter.WriteLine(tmp);
+                    log_add_row(tmp);
+                    DbRoutesDataGrid.Rows.Remove(DbRoutesDataGrid.Rows[DbDeleteRouteSelector.SelectedIndex]);
                     DbDeleteRouteSelector.Items.Remove(DbDeleteRouteSelector.SelectedItem);
                     DbDeleteRouteSelector.ResetText();
+                    DbDeleteRouteSelector.SelectedIndex = -1;
                 }
                 else
                 {
-                    DbDeleteResultLabel.Text = "Выберите дорогу";
-                    DbDeleteResultLabel.ForeColor = Color.Red;
+                    DbActionErrorLabel.Text = "Ошибка: выберите дорогу";
+                    db_show_error();
                 }
             }
-            DbDeleteResultLabel.Visible = true;
            // DbShowResultTimer.Stop();
             //DbShowResultTimer.Start();
         }
