@@ -42,7 +42,7 @@ namespace main
             Left = (Screen.PrimaryScreen.Bounds.Width - Width) / 2;
         }
 
-        private void MenuItemDB_Click(object sender, EventArgs e)
+        private void MenuItemDb_Click(object sender, EventArgs e)
         {
             DataBase = new DbForm(this);
             if (!DataBase.Visible)
@@ -67,7 +67,7 @@ namespace main
             if (city == "") return 2;
             else
             {
-                var _city = city.Substring(0, 1).ToUpper() + city.Substring(1).ToLower();
+                var _city = CRoute.FormatCity(city);
                 if (!cities.Contains(_city))
                 {
                     cities.Add(_city);
@@ -77,43 +77,44 @@ namespace main
             }
         }
 
-        public int AddRoute(string start, string finish, string lenght, string time, string cost)
+        public int AddRoute(string start, string finish, string length, string time, string cost)
         {
             int l, t, c;
             try
             {
-                l = int.Parse(lenght);
+                l = int.Parse(length);
                 t = int.Parse(time);
                 c = int.Parse(cost);
             }
             catch (FormatException)
             {
                 int q = 0;
-                if (lenght == "") q += 1;
+                if (length == "") q += 1;
                 if (time == "") q += 2;
                 if (cost == "") q += 4;
                 return (q == 0 ? -1 : q);
             }
-            if (start.Equals(finish)) return 2;
+            if (start.Equals(finish)) return 8;
+            if (l <= 0 || t <= 0 || c <= 0) return 10;
             if (start.CompareTo(finish) > 0)
             {
                 string tmp = start;
                 start = finish;
                 finish = tmp;
             }
-            if (routes.Exists(x => x.FirstCity == start && x.SecondCity == finish && x.Options[0] == l && x.Options[1] == t && x.Options[2] == c))
+            CRoute z = new CRoute(start, finish, l, t, c);
+            if (routes.Exists(x => x.FirstCity == z.FirstCity && x.SecondCity == z.SecondCity && x.Options[0] == z.Options[0] && x.Options[1] == z.Options[1] && x.Options[2] == z.Options[2]))
                 return 15;
             else
             {
-                routes.Add(new CRoute(start, finish, l, t, c));
+                routes.Add(z);
                 return 0;
             }
         }
 
-        public bool DeleteRoute(string st, string fn)
+        public void DeleteRoute(int id)
         {
-            routes.RemoveAll(x => x.FirstCity == fn && x.SecondCity == st || x.FirstCity == st && x.SecondCity == fn);
-            return true;
+            routes.RemoveAt(id);
         }
 
         public bool DbUpload()
@@ -122,7 +123,7 @@ namespace main
             databaseupload.WriteLine(cities.Count);
             foreach (var x in cities) databaseupload.WriteLine(x);
             databaseupload.WriteLine(routes.Count);
-            foreach (var x in routes) databaseupload.WriteLine(x.FirstCity + ' ' + x.SecondCity + ' ' + x.Options[0] + ' ' + x.Options[1] + ' ' + x.Options[2]);
+            foreach (var x in routes) databaseupload.WriteLine(String.Format("{0},{1},{2},{3},{4}",x.FirstCity, x.SecondCity, x.Options[0], x.Options[1], x.Options[2]));
             databaseupload.Close();
             return true;
         }
@@ -138,7 +139,7 @@ namespace main
             for (int i = 0; i < size; i++)
             {
                 int len, t, cost;
-                string[] c = database.ReadLine().Split(' ');
+                string[] c = database.ReadLine().Split(',');
                 try
                 {
                     len = int.Parse(c[2]);
@@ -152,7 +153,7 @@ namespace main
                 }
                 catch (FormatException)
                 {
-                    // invalid route lenght
+                    // invalid route length
                     continue;
                 }
                 if (cities.Exists(q => q == c[0]) && cities.Exists(q => q == c[1]))
@@ -226,11 +227,6 @@ namespace main
                     }
                 }
             }
-        }
-
-        private void MenuItemExit_Click(object sender, EventArgs e)
-        {
-            Close();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -326,16 +322,58 @@ namespace main
             }
             return true;
         }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        public int ModCity(string old, string newc)
+        {
+            if (!cities.Exists(x => x == newc))
+            {
+                int id = cities.FindIndex(x => x == old);
+                cities[id] = newc;
+                for (int i = 0; i < routes.Count; i++)
+                {
+                    routes[i].changenames(old, newc);
+                }
+                return 0;
+            }
+            else return 1;
+        }
+
+        public int ModRoute(int id, string newl, string newt, string newc)
+        {
+            int l, t, c;
+            try
+            {
+                l = int.Parse(newl);
+                t = int.Parse(newt);
+                c = int.Parse(newc);
+            }
+            catch (FormatException)
+            {
+                int q = 0;
+                if (newl == "") q += 1;
+                if (newt == "") q += 2;
+                if (newc == "") q += 4;
+                return (q == 0 ? -1 : q);
+            }
+            if (l <= 0 || t <= 0 || c <= 0) return 10;
+            if (routes[id].Options[0] == l && routes[id].Options[1] == t && routes[id].Options[2] == c) return 8;
+            routes[id].changeoptions(l, t, c);
+            return 0;
+        }
     }
 
     public class CRoute
     {
-        public string FirstCity { get; }
-        public string SecondCity { get; }
-        public int[] Options { get; }
-        //public int Distance { get; }  // удалено
+        public string FirstCity { get; private set; }
+        public string SecondCity { get; private set; }
+        public int[] Options { get; private set; }
 
-        public CRoute(string city1, string city2, int lenght, int time, int cost)
+        public CRoute(string city1, string city2, int length, int time, int cost)
         {
             int d = city1.CompareTo(city2);
             if (d > 0)
@@ -349,9 +387,38 @@ namespace main
                 SecondCity = city2;
             }
             Options = new int[3]; //расстояние, время, стоимость
-            Options[0] = lenght;
+            Options[0] = length;
             Options[1] = time;
             Options[2] = cost;
+        }
+
+        public void changenames(string old, string newc)
+        {
+            if (FirstCity == old) FirstCity = newc;
+            if (SecondCity == old) SecondCity = newc;
+        }
+
+        public void changeoptions(int l, int t, int c)
+        {
+            Options[0] = l;
+            Options[1] = t;
+            Options[2] = c;
+        }
+
+        public static string FormatCity(string text)
+        {
+            bool up = true;
+            char[] tmp = text.ToLower().ToCharArray();
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                if (up)
+                {
+                    tmp[i] = char.ToUpperInvariant(tmp[i]);
+                    up = false;
+                }
+                if (tmp[i] == ' ' || tmp[i] == '-') up = true;
+            }
+            return new string(tmp);
         }
     }
 }

@@ -30,10 +30,9 @@
         {
             this.SearchButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.MenuItemFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuItemDB = new System.Windows.Forms.ToolStripMenuItem();
-            this.MenuItemExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.MenuItemDb = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItemSettings = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StartPointBox = new System.Windows.Forms.ComboBox();
             this.EndPointBox = new System.Windows.Forms.ComboBox();
             this.StartPointLabel = new System.Windows.Forms.Label();
@@ -58,42 +57,34 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuItemFile,
-            this.MenuItemSettings});
+            this.MenuItemDb,
+            this.MenuItemSettings,
+            this.ExitToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(429, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // MenuItemFile
+            // MenuItemDb
             // 
-            this.MenuItemFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MenuItemDB,
-            this.MenuItemExit});
-            this.MenuItemFile.Name = "MenuItemFile";
-            this.MenuItemFile.Size = new System.Drawing.Size(48, 20);
-            this.MenuItemFile.Text = "Файл";
-            // 
-            // MenuItemDB
-            // 
-            this.MenuItemDB.Name = "MenuItemDB";
-            this.MenuItemDB.Size = new System.Drawing.Size(141, 22);
-            this.MenuItemDB.Text = "База данных";
-            this.MenuItemDB.Click += new System.EventHandler(this.MenuItemDB_Click);
-            // 
-            // MenuItemExit
-            // 
-            this.MenuItemExit.Name = "MenuItemExit";
-            this.MenuItemExit.Size = new System.Drawing.Size(141, 22);
-            this.MenuItemExit.Text = "Выход";
-            this.MenuItemExit.Click += new System.EventHandler(this.MenuItemExit_Click);
+            this.MenuItemDb.Name = "MenuItemDb";
+            this.MenuItemDb.Size = new System.Drawing.Size(86, 20);
+            this.MenuItemDb.Text = "База данных";
+            this.MenuItemDb.Click += new System.EventHandler(this.MenuItemDb_Click);
             // 
             // MenuItemSettings
             // 
             this.MenuItemSettings.Name = "MenuItemSettings";
             this.MenuItemSettings.Size = new System.Drawing.Size(83, 20);
             this.MenuItemSettings.Text = "Параметры";
+            // 
+            // ExitToolStripMenuItem
+            // 
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.ExitToolStripMenuItem.Text = "Выход";
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // StartPointBox
             // 
@@ -195,9 +186,7 @@
 
         private System.Windows.Forms.Button SearchButton;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem MenuItemFile;
-        private System.Windows.Forms.ToolStripMenuItem MenuItemDB;
-        private System.Windows.Forms.ToolStripMenuItem MenuItemExit;
+        private System.Windows.Forms.ToolStripMenuItem MenuItemDb;
         private System.Windows.Forms.ToolStripMenuItem MenuItemSettings;
         private System.Windows.Forms.ComboBox StartPointBox;
         private System.Windows.Forms.ComboBox EndPointBox;
@@ -206,6 +195,7 @@
         private System.Windows.Forms.RichTextBox RouteSearchLog;
         private System.Windows.Forms.ComboBox RouteCriteriaSelector;
         private System.Windows.Forms.Label RouteCriteriaLabel;
+        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
     }
 }
 
