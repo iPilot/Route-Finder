@@ -15,13 +15,15 @@ namespace main
         DbForm DataBase;
         bool DbLoaded;
         string DbPath;
-        System.IO.StreamReader database;
+        System.IO.StreamReader db_reader;
         public List<string> cities { get; }
         public List<CRoute> routes { get; }
         private List<List<KeyValuePair<int, int[]>>> work_graph;
         private List<List<int>> SearchResult;
         Queue<int> work_queue;
         int[] used;
+
+        
 
         public MainForm()
         {
@@ -57,8 +59,14 @@ namespace main
 
         public bool DeleteCity(string city)
         {
-            cities.Remove(city);
+            foreach(var x in routes)
+                if (x.FirstCity == city || x.SecondCity == city)
+                {
+                    if (DataBase != null)
+                        DataBase.log_add_row(1, 1, x);
+                }
             routes.RemoveAll(x => x.FirstCity == city || x.SecondCity == city);
+            cities.Remove(city);
             return true;
         }
 
@@ -130,16 +138,16 @@ namespace main
 
         private void DbLoad()
         {
-            int size = int.Parse(database.ReadLine());
+            int size = int.Parse(db_reader.ReadLine());
             for(int i = 0; i < size; i++)
             {
-                AddCity(database.ReadLine());
+                AddCity(db_reader.ReadLine());
             }
-            size = int.Parse(database.ReadLine());
+            size = int.Parse(db_reader.ReadLine());
             for (int i = 0; i < size; i++)
             {
                 int len, t, cost;
-                string[] c = database.ReadLine().Split(',');
+                string[] c = db_reader.ReadLine().Split(',');
                 try
                 {
                     len = int.Parse(c[2]);
@@ -160,7 +168,7 @@ namespace main
                     routes.Add(new CRoute(c[0], c[1], len, t, cost));
             }
             DbLoaded = true;
-            database.Close();
+            db_reader.Close();
             BuildWorkGraph();
         }
 
@@ -199,7 +207,7 @@ namespace main
         {
             try
             {
-                database = new System.IO.StreamReader(DbPath);
+                db_reader = new System.IO.StreamReader(DbPath);
                 DbLoad();
             }
             catch (System.IO.FileNotFoundException)
@@ -221,7 +229,7 @@ namespace main
                         if (newfile == DialogResult.OK)
                         {
                             DbPath = newpath.FileName;
-                            database = new System.IO.StreamReader(DbPath);
+                            db_reader = new System.IO.StreamReader(DbPath);
                             DbLoad();
                         }
                     }
@@ -419,6 +427,19 @@ namespace main
                 if (tmp[i] == ' ' || tmp[i] == '-') up = true;
             }
             return new string(tmp);
+        }
+
+        public static string TimeFormat(int t, string k = "")
+        {
+            if (k == "")
+                return (t > 9 ? t.ToString() : "0" + t.ToString());
+            else
+                return (t > 9 ? k : "0" + k);
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0} - {1} ({2}, {3}, {4})", FirstCity, SecondCity, Options[0], Options[1], Options[2]);
         }
     }
 }

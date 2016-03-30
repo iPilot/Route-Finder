@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace main
 {
@@ -43,25 +38,26 @@ namespace main
                 DbCitiesList.Items.Add(parent.cities[i]);
                 DbModCitySelector.Items.Add(parent.cities[i]);
             }
-            string tmp;
+            //string tmp;
             for (int i = 0; i < parent.routes.Count; i++)
             {
-                tmp = String.Format("{0} - {1} ({2},{3},{4})", parent.routes[i].FirstCity, parent.routes[i].SecondCity, parent.routes[i].Options[0], parent.routes[i].Options[1], parent.routes[i].Options[2]);
-                DbDeleteRouteSelector.Items.Add(tmp);
-                DbModRouteSelector.Items.Add(tmp);
+                //tmp = String.Format("{0} - {1} ({2},{3},{4})", parent.routes[i].FirstCity, parent.routes[i].SecondCity, parent.routes[i].Options[0], parent.routes[i].Options[1], parent.routes[i].Options[2]);
+                DbDeleteRouteSelector.Items.Add(parent.routes[i]);
+                DbModRouteSelector.Items.Add(parent.routes[i]);
                 DbRoutesDataGrid.Rows.Add(i+1, parent.routes[i].FirstCity, parent.routes[i].SecondCity, parent.routes[i].Options[0], parent.routes[i].Options[1], parent.routes[i].Options[2]);
             }
             DbAddRouteEndSelector.SelectedIndex = -1;
             DbAddRouteStartSelector.SelectedIndex = -1;
             DbDeleteCitySelector.SelectedIndex = -1;
             DbDeleteRouteSelector.SelectedIndex = -1;
+            DbModCitySelector.SelectedIndex = -1;
+            DbModRouteSelector.SelectedIndex = -1;
             DbAddRouteEndSelector.ResetText();
             DbAddRouteStartSelector.ResetText();
             DbDeleteCitySelector.ResetText();
             DbDeleteRouteSelector.ResetText();
             DbModCitySelector.ResetText();
             DbModRouteSelector.ResetText();
-            //DbTabs.Refresh();
         }
 
         private void DbForm_Load(object sender, EventArgs e)
@@ -94,46 +90,50 @@ namespace main
             DbRefresh();
         }
 
+        // удалено
         private void local_log_add_row(string row)
         {
             string[] tmp = row.Split(',');
+            int[] time = new int[12];
+            string result;
             try
             {
-                DbLogText.AppendText(tmp[0] + "/" + tmp[1] + "/" + tmp[2] + " " + (tmp[3].Length == 2 ? tmp[3] : "0" + tmp[3]) + ":" + (tmp[4].Length == 2 ? tmp[4] : "0" + tmp[4]) + ":" + (tmp[5].Length == 2 ? tmp[5] : "0" + tmp[5]) + " ");
+                for (int z = 0; z < 6; z++) time[z] = int.Parse(tmp[z]);
+                string[] args = new string[6];
+                for (int z = 0; z < 6; z++) args[z] = CRoute.TimeFormat(time[z], tmp[z]);
+                result = String.Format("{0}/{1}/{2} {3}:{4}:{5} ", args); //CRoute.TimeFormat(time[0], tmp[0]), (time[1] > 9 ? tmp[1] : "0" + tmp[1]), tmp[2], (time[3] > 9 ? tmp[3] : "0" + tmp[3]), (time[4] > 9 ? tmp[4] : "0" + tmp[4]), (time[5] > 9 ? tmp[5] : "0" + tmp[5])));
                 if (tmp[6] == "add")
                 {
-                    DbLogText.AppendText("Добавлен ");
+                    result += "Добавлен";
                 }
                 if (tmp[6] == "del")
                 {
-                    DbLogText.AppendText("Удален ");
+                   result += "Удален";
                 }
                 if (tmp[6] == "mod")
                 {
-                    DbLogText.AppendText("Изменен");
+                    result += "Изменен";
                 }
                 if (tmp[7] == "c")
                 {
-                    DbLogText.AppendText(" город: " + tmp[8]);
+                    result += " город: ";
                     if (tmp[6] == "mod")
-                    {
-                        DbLogText.AppendText(String.Format(" на {0}\n", tmp[9]));
-                    }
+                            result += String.Format(" {0} на {1}\n", tmp[8], tmp[9]);
                     else
-                    {
-                        DbLogText.AppendText("\n");
-                    }
+                           result += tmp[8] + "\n";
                 }
                 if (tmp[7] == "r")
                 {
                     
                     if (tmp[6] == "mod")
                     {
-                        DbLogText.AppendText(String.Format("ы параметры маршрута {0} - {1}: ({2} км, {3} ч, {4}$) на ({5} км, {6} ч, {7}$)\n", tmp[8], tmp[9], tmp[10], tmp[11], tmp[12], tmp[13], tmp[14], tmp[15]));
+                        for (int z = 10; z < 16; z++) int.Parse(tmp[z]);
+                        result += String.Format("ы параметры маршрута {0} - {1}: ({2} км, {3} ч, {4} руб) на ({5} км, {6} ч, {7} руб)\n", tmp[8], tmp[9], tmp[10], tmp[11], tmp[12], tmp[13], tmp[14], tmp[15]);
                     }
                     else
                     {
-                        DbLogText.AppendText(String.Format(" маршрут: {0} - {1} ({2} км, {3} ч, {4}$)\n",tmp[8], tmp[9], tmp[10], tmp[11], tmp[12]));
+                        for (int z = 10; z < 13; z++) int.Parse(tmp[z]);
+                        result += String.Format(" маршрут: {0} - {1} ({2} км, {3} ч, {4} руб)\n",tmp[8], tmp[9], tmp[10], tmp[11], tmp[12]);
                     }
                 }
             }
@@ -141,16 +141,22 @@ namespace main
             {
                 return;
             }
+            catch (FormatException)
+            {
+                return;
+            }
+            DbLogText.AppendText(result);
         }
 
-        private void log_add_row(int op_type, int obj_type, string obj, string add_obj = "")
+        public void log_add_row(int op_type, int obj_type, object obj, object add_obj = null)
         {
             time = DateTime.Now;
             string timestamp = String.Format("{0},{1},{2},{3},{4},{5},", time.Day, time.Month, time.Year, time.Hour, time.Minute, time.Second);
+            string local = String.Format("{0}/{1}/{2} {3}:{4}:{5} ", CRoute.TimeFormat(time.Day), CRoute.TimeFormat(time.Month), time.Year, CRoute.TimeFormat(time.Hour), CRoute.TimeFormat(time.Minute), CRoute.TimeFormat(time.Second));
             switch (op_type)
             {
-                case 0: { timestamp += "add,"; break; }
-                case 1: { timestamp += "del,"; break; }
+                case 0: { timestamp += "add,"; local += "Добавлен";  break; }
+                case 1: { timestamp += "del,"; local += "Удален"; break; }
                 case 2: { timestamp += "mod,"; break; }
             }
             switch (obj_type)
@@ -159,34 +165,37 @@ namespace main
                     {
                         if (op_type == 2)
                         {
-                            timestamp += String.Format("c,{0},{1}",obj, add_obj);
+                            timestamp += String.Format("c,{0},{1}", obj, add_obj);
+                            local += String.Format("Изменен город: {0} на {1}\n", obj, add_obj);
                         }
                         else
                         {
-                            timestamp += String.Format("c,{0}",obj);
+                            timestamp += String.Format("c,{0}", obj);
+                            local += String.Format(" город: {0}", obj);
                         }
                         break;
                     }
                 case 1:
                     {
-                        string[] c = obj.Split(' ');
-                        string[] d = c[3].Substring(1, c[3].Length - 2).Split(',');
+                        CRoute tmp = (CRoute)obj;
                         if (op_type == 2)
                         {
-                            string[] old_c = add_obj.Split(',');
-                            timestamp += String.Format("r,{0},{1},{2},{3},{4},{5},{6},{7}", c[0], c[2], d[0], d[1], d[2], old_c[0], old_c[1], old_c[2]);
-                            DbActionSuccessLabel.Text = String.Format("Изменен маршрут {0} - {1}: ({2}, {3}, {4}) на ({5}, {6}, {7})", c[0], c[2], d[0], d[1], d[2], old_c[0], old_c[1], old_c[2]);
+                            string[] old_c = (string[])add_obj;
+                            timestamp += String.Format("r,{0},{1},{2},{3},{4},{5},{6},{7}", tmp.FirstCity, tmp.SecondCity, tmp.Options[0], tmp.Options[1], tmp.Options[2], old_c[0], old_c[1], old_c[2]);
+                            DbActionSuccessLabel.Text = String.Format("Изменен маршрут {0} - {1}: ({2} км, {3} ч, {4} руб) на ({5} км, {6} ч, {7} руб)", tmp.FirstCity, tmp.SecondCity, tmp.Options[0], tmp.Options[1], tmp.Options[2], old_c[0], old_c[1], old_c[2]);
+                            local += DbActionSuccessLabel.Text;
                         }
                         else
                         {
-                            timestamp += String.Format("r,{0},{1},{2},{3},{4}", c[0], c[2], d[0], d[1], d[2]);
-                            if (op_type == 1) DbActionSuccessLabel.Text = String.Format("Удалено: дорога {0} - {1} ({2}, {3}, {4})", c[0], c[2], d[0], d[1], d[2]);
+                            timestamp += String.Format("r,{0},{1},{2},{3},{4}", tmp.FirstCity, tmp.SecondCity, tmp.Options[0], tmp.Options[1], tmp.Options[2]);
+                            if (op_type == 1) DbActionSuccessLabel.Text = String.Format("Удалено: дорога {0} - {1} ({2}, {3}, {4})", tmp.FirstCity, tmp.SecondCity, tmp.Options[0], tmp.Options[1], tmp.Options[2]);
+                            local += String.Format(" маршрут: {0} - {1} ({2} км, {3} ч, {4} руб)\n", tmp.FirstCity, tmp.SecondCity, tmp.Options[0], tmp.Options[1], tmp.Options[2]);
                         }
                         break;
                     }
             }   
             DbLogWriter.WriteLine(timestamp);
-            local_log_add_row(timestamp);
+            DbLogText.AppendText(local);
         }
 
         private void DbAddRoute_CheckedChanged(object sender, EventArgs e)
@@ -279,7 +288,7 @@ namespace main
                                 DbDeleteRouteSelector.Items.Add(qz);
                                 DbModRouteSelector.Items.Add(qz);
                                 DbActionSuccessLabel.Text = String.Format("Добавлено: дорога {0} - {1} ({2} км, {3} ч, {4}$)", DbAddRouteStartSelector.SelectedItem.ToString(), DbAddRouteEndSelector.SelectedItem.ToString(), DbAddRouteLength.Text, DbAddRouteTime.Text, DbAddRouteCost.Text);
-                                log_add_row(0, 1, String.Format("{0} - {1} ({2},{3},{4})", DbAddRouteStartSelector.SelectedItem.ToString(), DbAddRouteEndSelector.SelectedItem.ToString(), DbAddRouteLength.Text, DbAddRouteTime.Text, DbAddRouteCost.Text));
+                                log_add_row(0, 1, qd);
                                 DbRoutesDataGrid.Rows.Add(DbRoutesDataGrid.Rows.Count + 1, DbAddRouteStartSelector.SelectedItem.ToString(), DbAddRouteEndSelector.SelectedItem.ToString(), DbAddRouteLength.Text, DbAddRouteTime.Text, DbAddRouteCost.Text);
                                 DbAddRouteEndSelector.ResetText();
                                 DbAddRouteEndSelector.SelectedIndex = -1;
@@ -354,9 +363,11 @@ namespace main
                 if (DbDeleteRouteSelector.SelectedIndex >= 0)
                 {
                     parent.DeleteRoute(DbDeleteRouteSelector.SelectedIndex);
-                    log_add_row(1, 1, DbDeleteRouteSelector.SelectedItem.ToString());
-                    DbRoutesDataGrid.Rows.Remove(DbRoutesDataGrid.Rows[DbDeleteRouteSelector.SelectedIndex]);
-                    DbDeleteRouteSelector.Items.Remove(DbDeleteRouteSelector.SelectedItem);
+                    log_add_row(1, 1, DbDeleteRouteSelector.Items[DbDeleteRouteSelector.SelectedIndex]);
+                    int x = 0;
+                    while (DbRoutesDataGrid.Rows[x].Cells[0].ToString() != (DbDeleteRouteSelector.SelectedIndex + 1).ToString()) x++;
+                    DbRoutesDataGrid.Rows.RemoveAt(x);
+                    DbDeleteRouteSelector.Items.RemoveAt(DbDeleteRouteSelector.SelectedIndex);
                     DbDeleteRouteSelector.ResetText();
                     DbDeleteRouteSelector.SelectedIndex = -1;
                 }
@@ -429,78 +440,90 @@ namespace main
         {
             if (DbModCity.Checked)
             {
-                if (DbModNewCityName.Text == DbModCitySelector.SelectedItem.ToString())
+                if (DbModCitySelector.SelectedIndex >= 0)
                 {
-                    db_show_error(String.Format("{0} не изменено", DbModNewCityName.Text));
-                    return;
+                    if (DbModNewCityName.Text == DbModCitySelector.SelectedItem.ToString())
+                    {
+                        db_show_error(String.Format("{0}: не изменено", DbModNewCityName.Text));
+                        return;
+                    }
+                    else
+                    {
+                        string old = DbModCitySelector.SelectedItem.ToString();
+                        string newcity = CRoute.FormatCity(DbModNewCityName.Text);
+                        int r = parent.ModCity(old, newcity);
+                        switch (r)
+                        {
+                            case 0:
+                                {
+                                    DbActionSuccessLabel.Text = String.Format("Изменен город: {0} на {1}", DbModCitySelector.SelectedItem.ToString(), newcity);
+                                    log_add_row(2, 0, old, newcity);
+                                    DbModNewCityName.ResetText();
+                                    DbRefresh();
+                                    break;
+                                }
+                            case 1:
+                                {
+                                    db_show_error("Ошибка: недопустимое новое имя города");
+                                    break;
+                                }
+                        }
+                    }
                 }
-                else
+                else db_show_error("Ошибка: выберите город");
+            }
+            else
+            {
+                if (DbModRouteSelector.SelectedIndex >= 0)
                 {
-                    string old = DbModCitySelector.SelectedItem.ToString();
-                    string newcity = CRoute.FormatCity(DbModNewCityName.Text);
-                    int r = parent.ModCity(old, newcity);
+                    int id = DbModRouteSelector.SelectedIndex;
+                    int r = parent.ModRoute(id, DbModNewRouteLength.Text, DbModNewRouteTime.Text, DbModNewRouteCost.Text);
                     switch (r)
                     {
                         case 0:
                             {
-                                DbActionSuccessLabel.Text = String.Format("Изменен город: {0} на {1}", DbModCitySelector.SelectedItem.ToString(), DbModNewCityName.Text);
-                                log_add_row(2, 0, old, newcity);
-                                DbModNewCityName.ResetText();
+                                string[] qd = { DbModNewRouteLength.Text, DbModNewRouteTime.Text, DbModNewRouteCost.Text };
+                                log_add_row(2, 1, DbModRouteSelector.Items[id], qd);
+                                DbModNewRouteCost.ResetText();
+                                DbModNewRouteLength.ResetText();
+                                DbModNewRouteTime.ResetText();
                                 DbRefresh();
                                 break;
                             }
-                        case 1:
+                        case 8:
                             {
-                                db_show_error("Ошибка: недопустимое новое имя города");
+                                db_show_error("Не изменено");
+                                break;
+                            }
+                        case 10:
+                            {
+                                db_show_error("Ошибка: параметры должны быть положительными");
+                                break;
+                            }
+                        case -1:
+                            {
+                                db_show_error("Ошибка: параметры должны быть целыми числами");
+                                break;
+                            }
+                        default:
+                            {
+                                string tmp;
+                                tmp = "Ошибка: введите ";
+                                if ((r & 1) == 1) tmp += "расстояние; ";
+                                if (((r >> 1) & 1) == 1) tmp += "время; ";
+                                if (((r >> 2) & 1) == 1) tmp += "стоимость; ";
+                                db_show_error(tmp);
                                 break;
                             }
                     }
-                   
                 }
+                else db_show_error("Ошибка: выберите дорогу");
             }
-            else
-            {
-                int id = DbModRouteSelector.SelectedIndex;
-                int r = parent.ModRoute(id, DbModNewRouteLength.Text, DbModNewRouteTime.Text, DbModNewRouteCost.Text);
-                switch (r)
-                {
-                    case 0:
-                        {
-                            string qd = String.Format("{0},{1},{2}", DbModNewRouteLength.Text, DbModNewRouteTime.Text, DbModNewRouteCost.Text);
-                            log_add_row(2, 1, DbModRouteSelector.SelectedItem.ToString(), qd);
-                            DbModNewRouteCost.ResetText();
-                            DbModNewRouteLength.ResetText();
-                            DbModNewRouteTime.ResetText();
-                            DbRefresh();
-                            break;
-                        }
-                    case 8:
-                        {
-                            db_show_error("Не изменено");
-                            break;
-                        }
-                    case 10:
-                        {
-                            db_show_error("Ошибка: параметры должны быть положительными");
-                            break;
-                        }
-                    case -1:
-                        {
-                            db_show_error("Ошибка: параметры должны быть целыми числами");
-                            break;
-                        }
-                    default:
-                        {
-                            string tmp;
-                            tmp = "Ошибка: введите ";
-                            if ((r & 1) == 1) tmp += "расстояние; ";
-                            if (((r >> 1) & 1) == 1) tmp += "время; ";
-                            if (((r >> 2) & 1) == 1) tmp += "стоимость; ";
-                            db_show_error(tmp);
-                            break;
-                        }
-                }
-            }
+        }
+
+        private void DbDeleteRouteSelector_Format(object sender, ListControlConvertEventArgs e)
+        {
+            //e.Value = String.Format("{0} - {1} ({2}, {3}, {4})",)
         }
     }
 }
