@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoOptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoOptForm.Designer.cs">
+      <DependentUpon>AutoOptForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DbForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AutoOptForm.resx">
+      <DependentUpon>AutoOptForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DbForm.resx">
       <DependentUpon>DbForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -75,6 +84,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Properties\DataSources\MainForm.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -89,6 +99,12 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary1\RouteFinderLibrary.csproj">
+      <Project>{db36e4cf-ab7a-4906-acb2-2e86ce42350f}</Project>
+      <Name>RouteFinderLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

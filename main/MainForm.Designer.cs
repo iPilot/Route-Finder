@@ -78,6 +78,7 @@
             this.MenuItemSettings.Name = "MenuItemSettings";
             this.MenuItemSettings.Size = new System.Drawing.Size(83, 20);
             this.MenuItemSettings.Text = "Параметры";
+            this.MenuItemSettings.Click += new System.EventHandler(this.MenuItemSettings_Click);
             // 
             // ExitToolStripMenuItem
             // 
@@ -90,6 +91,7 @@
             // 
             this.StartPointBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.StartPointBox.FormattingEnabled = true;
+            this.StartPointBox.IntegralHeight = false;
             this.StartPointBox.Location = new System.Drawing.Point(10, 46);
             this.StartPointBox.Name = "StartPointBox";
             this.StartPointBox.Size = new System.Drawing.Size(160, 28);
@@ -99,6 +101,7 @@
             // 
             this.EndPointBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.EndPointBox.FormattingEnabled = true;
+            this.EndPointBox.IntegralHeight = false;
             this.EndPointBox.Location = new System.Drawing.Point(210, 46);
             this.EndPointBox.Name = "EndPointBox";
             this.EndPointBox.Size = new System.Drawing.Size(160, 28);
@@ -132,7 +135,9 @@
             // 
             // RouteCriteriaSelector
             // 
+            this.RouteCriteriaSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RouteCriteriaSelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.RouteCriteriaSelector.ForeColor = System.Drawing.SystemColors.ControlText;
             this.RouteCriteriaSelector.FormattingEnabled = true;
             this.RouteCriteriaSelector.Items.AddRange(new object[] {
             "Расстояние",
@@ -172,7 +177,6 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Поиск маршрутов";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip1.ResumeLayout(false);

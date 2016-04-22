@@ -34,20 +34,23 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.DbAddButton = new System.Windows.Forms.Button();
             this.DbAddNewCityText = new System.Windows.Forms.TextBox();
             this.DbTabs = new System.Windows.Forms.TabControl();
             this.DbAddTab = new System.Windows.Forms.TabPage();
             this.DbAddRouteOptions = new System.Windows.Forms.Panel();
+            this.DbAddRouteSpeedLimitLabel = new System.Windows.Forms.Label();
+            this.DbAddRouteAddCosts = new System.Windows.Forms.TextBox();
             this.DbAddRouteStartLabel = new System.Windows.Forms.Label();
-            this.DbAddRouteStartSelector = new System.Windows.Forms.ComboBox();
-            this.DbAddRouteCostLabel = new System.Windows.Forms.Label();
+            this.DbAddRouteSource = new System.Windows.Forms.ComboBox();
+            this.DbAddRouteAddCostsLabel = new System.Windows.Forms.Label();
             this.DbAddRouteEndLabel = new System.Windows.Forms.Label();
-            this.DbAddRouteTimeLabel = new System.Windows.Forms.Label();
-            this.DbAddRouteEndSelector = new System.Windows.Forms.ComboBox();
-            this.DbAddRouteCost = new System.Windows.Forms.TextBox();
+            this.DbAddRouteFuelCostLabel = new System.Windows.Forms.Label();
+            this.DbAddRouteDest = new System.Windows.Forms.ComboBox();
+            this.DbAddRouteSpeedLimit = new System.Windows.Forms.TextBox();
             this.DbAddRouteLengthLabel = new System.Windows.Forms.Label();
-            this.DbAddRouteTime = new System.Windows.Forms.TextBox();
+            this.DbAddRouteFuelCost = new System.Windows.Forms.TextBox();
             this.DbAddRouteLength = new System.Windows.Forms.TextBox();
             this.DbAddNewCityLabel = new System.Windows.Forms.Label();
             this.DbAddBox = new System.Windows.Forms.GroupBox();
@@ -68,12 +71,14 @@
             this.DbModButton = new System.Windows.Forms.Button();
             this.DbModNewCityName = new System.Windows.Forms.TextBox();
             this.DbModRouteOptions = new System.Windows.Forms.Panel();
-            this.DbModNewRouteCostLabel = new System.Windows.Forms.Label();
-            this.DbModNewRouteTimeLabel = new System.Windows.Forms.Label();
+            this.DbModNewRouteAddCostsLabel = new System.Windows.Forms.Label();
+            this.DbModNewRouteFuelCostLabel = new System.Windows.Forms.Label();
+            this.DbModNewRouteSpeedLimitLabel = new System.Windows.Forms.Label();
             this.DbModNewRouteLengthLabel = new System.Windows.Forms.Label();
+            this.DbModNewRouteAddCosts = new System.Windows.Forms.TextBox();
             this.DbModNewRouteLength = new System.Windows.Forms.TextBox();
-            this.DbModNewRouteTime = new System.Windows.Forms.TextBox();
-            this.DbModNewRouteCost = new System.Windows.Forms.TextBox();
+            this.DbModNewRouteSpeedLimit = new System.Windows.Forms.TextBox();
+            this.DbModNewRouteFuelCost = new System.Windows.Forms.TextBox();
             this.DbModRouteSelector = new System.Windows.Forms.ComboBox();
             this.DbModCitySelector = new System.Windows.Forms.ComboBox();
             this.DbModBox = new System.Windows.Forms.GroupBox();
@@ -83,12 +88,6 @@
             this.DbCitiesList = new System.Windows.Forms.ListBox();
             this.DbRoutesTab = new System.Windows.Forms.TabPage();
             this.DbRoutesDataGrid = new System.Windows.Forms.DataGridView();
-            this.DbRouoteColumn0 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DbRoutesColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DbRoutesColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DbRoutesColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DbRoutesColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DbRoutesColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DbLogTab = new System.Windows.Forms.TabPage();
             this.DbLogText = new System.Windows.Forms.RichTextBox();
             this.DbClearLog = new System.Windows.Forms.Button();
@@ -96,6 +95,13 @@
             this.DbActionResult = new System.Windows.Forms.StatusStrip();
             this.DbActionSuccessLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.DbActionErrorLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.DbRoutesColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbRoutesColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbRoutesColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbRoutesColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbRoutesColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbRoutesColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DbDeleteRouteAll = new System.Windows.Forms.CheckBox();
             this.DbTabs.SuspendLayout();
             this.DbAddTab.SuspendLayout();
             this.DbAddRouteOptions.SuspendLayout();
@@ -114,12 +120,11 @@
             // 
             // DbAddButton
             // 
-            this.DbAddButton.AutoSize = true;
             this.DbAddButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddButton.Location = new System.Drawing.Point(158, 240);
+            this.DbAddButton.Location = new System.Drawing.Point(190, 270);
             this.DbAddButton.Name = "DbAddButton";
-            this.DbAddButton.Size = new System.Drawing.Size(94, 40);
-            this.DbAddButton.TabIndex = 1;
+            this.DbAddButton.Size = new System.Drawing.Size(100, 40);
+            this.DbAddButton.TabIndex = 7;
             this.DbAddButton.Text = "Добавить";
             this.DbAddButton.UseVisualStyleBackColor = true;
             this.DbAddButton.Click += new System.EventHandler(this.DbAddButton_Click);
@@ -127,11 +132,11 @@
             // DbAddNewCityText
             // 
             this.DbAddNewCityText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddNewCityText.Location = new System.Drawing.Point(85, 84);
+            this.DbAddNewCityText.Location = new System.Drawing.Point(78, 84);
             this.DbAddNewCityText.MaxLength = 25;
             this.DbAddNewCityText.Name = "DbAddNewCityText";
-            this.DbAddNewCityText.Size = new System.Drawing.Size(240, 26);
-            this.DbAddNewCityText.TabIndex = 4;
+            this.DbAddNewCityText.Size = new System.Drawing.Size(320, 26);
+            this.DbAddNewCityText.TabIndex = 1;
             // 
             // DbTabs
             // 
@@ -141,11 +146,15 @@
             this.DbTabs.Controls.Add(this.DbCitiesTab);
             this.DbTabs.Controls.Add(this.DbRoutesTab);
             this.DbTabs.Controls.Add(this.DbLogTab);
+            this.DbTabs.ItemSize = new System.Drawing.Size(80, 18);
             this.DbTabs.Location = new System.Drawing.Point(-1, 0);
             this.DbTabs.Name = "DbTabs";
             this.DbTabs.SelectedIndex = 0;
-            this.DbTabs.Size = new System.Drawing.Size(418, 322);
+            this.DbTabs.Size = new System.Drawing.Size(488, 350);
             this.DbTabs.TabIndex = 8;
+            this.DbTabs.KeyDown += new System.Windows.Forms.KeyEventHandler(this.DbTabs_KeyDown);
+            this.DbTabs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DbTabs_KeyPress);
+            this.DbTabs.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DbTabs_KeyUp);
             // 
             // DbAddTab
             // 
@@ -157,28 +166,48 @@
             this.DbAddTab.Location = new System.Drawing.Point(4, 22);
             this.DbAddTab.Name = "DbAddTab";
             this.DbAddTab.Padding = new System.Windows.Forms.Padding(3);
-            this.DbAddTab.Size = new System.Drawing.Size(410, 296);
+            this.DbAddTab.Size = new System.Drawing.Size(480, 324);
             this.DbAddTab.TabIndex = 0;
-            this.DbAddTab.Text = "Добавить";
+            this.DbAddTab.Text = "    Добавить   ";
             this.DbAddTab.UseVisualStyleBackColor = true;
             // 
             // DbAddRouteOptions
             // 
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteSpeedLimitLabel);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteAddCosts);
             this.DbAddRouteOptions.Controls.Add(this.DbAddRouteStartLabel);
-            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteStartSelector);
-            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteCostLabel);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteSource);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteAddCostsLabel);
             this.DbAddRouteOptions.Controls.Add(this.DbAddRouteEndLabel);
-            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteTimeLabel);
-            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteEndSelector);
-            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteCost);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteFuelCostLabel);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteDest);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteSpeedLimit);
             this.DbAddRouteOptions.Controls.Add(this.DbAddRouteLengthLabel);
-            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteTime);
+            this.DbAddRouteOptions.Controls.Add(this.DbAddRouteFuelCost);
             this.DbAddRouteOptions.Controls.Add(this.DbAddRouteLength);
-            this.DbAddRouteOptions.Location = new System.Drawing.Point(80, 60);
+            this.DbAddRouteOptions.Location = new System.Drawing.Point(73, 60);
             this.DbAddRouteOptions.Name = "DbAddRouteOptions";
-            this.DbAddRouteOptions.Size = new System.Drawing.Size(250, 155);
+            this.DbAddRouteOptions.Size = new System.Drawing.Size(330, 197);
             this.DbAddRouteOptions.TabIndex = 18;
             this.DbAddRouteOptions.Visible = false;
+            // 
+            // DbAddRouteSpeedLimitLabel
+            // 
+            this.DbAddRouteSpeedLimitLabel.AutoSize = true;
+            this.DbAddRouteSpeedLimitLabel.Location = new System.Drawing.Point(185, 109);
+            this.DbAddRouteSpeedLimitLabel.Name = "DbAddRouteSpeedLimitLabel";
+            this.DbAddRouteSpeedLimitLabel.Size = new System.Drawing.Size(126, 13);
+            this.DbAddRouteSpeedLimitLabel.TabIndex = 20;
+            this.DbAddRouteSpeedLimitLabel.Text = "Ограничение скорости:";
+            // 
+            // DbAddRouteAddCosts
+            // 
+            this.DbAddRouteAddCosts.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbAddRouteAddCosts.Location = new System.Drawing.Point(185, 166);
+            this.DbAddRouteAddCosts.MaxLength = 9;
+            this.DbAddRouteAddCosts.Name = "DbAddRouteAddCosts";
+            this.DbAddRouteAddCosts.Size = new System.Drawing.Size(125, 22);
+            this.DbAddRouteAddCosts.TabIndex = 7;
             // 
             // DbAddRouteStartLabel
             // 
@@ -190,27 +219,27 @@
             this.DbAddRouteStartLabel.TabIndex = 18;
             this.DbAddRouteStartLabel.Text = "Начало дороги:";
             // 
-            // DbAddRouteStartSelector
+            // DbAddRouteSource
             // 
-            this.DbAddRouteStartSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.DbAddRouteStartSelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddRouteStartSelector.FormattingEnabled = true;
-            this.DbAddRouteStartSelector.IntegralHeight = false;
-            this.DbAddRouteStartSelector.Location = new System.Drawing.Point(5, 24);
-            this.DbAddRouteStartSelector.MaxDropDownItems = 10;
-            this.DbAddRouteStartSelector.MaxLength = 35;
-            this.DbAddRouteStartSelector.Name = "DbAddRouteStartSelector";
-            this.DbAddRouteStartSelector.Size = new System.Drawing.Size(240, 26);
-            this.DbAddRouteStartSelector.TabIndex = 13;
+            this.DbAddRouteSource.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DbAddRouteSource.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbAddRouteSource.FormattingEnabled = true;
+            this.DbAddRouteSource.IntegralHeight = false;
+            this.DbAddRouteSource.Location = new System.Drawing.Point(5, 24);
+            this.DbAddRouteSource.MaxDropDownItems = 10;
+            this.DbAddRouteSource.MaxLength = 35;
+            this.DbAddRouteSource.Name = "DbAddRouteSource";
+            this.DbAddRouteSource.Size = new System.Drawing.Size(320, 26);
+            this.DbAddRouteSource.TabIndex = 2;
             // 
-            // DbAddRouteCostLabel
+            // DbAddRouteAddCostsLabel
             // 
-            this.DbAddRouteCostLabel.AutoSize = true;
-            this.DbAddRouteCostLabel.Location = new System.Drawing.Point(175, 109);
-            this.DbAddRouteCostLabel.Name = "DbAddRouteCostLabel";
-            this.DbAddRouteCostLabel.Size = new System.Drawing.Size(65, 13);
-            this.DbAddRouteCostLabel.TabIndex = 17;
-            this.DbAddRouteCostLabel.Text = "Стоимость:";
+            this.DbAddRouteAddCostsLabel.AutoSize = true;
+            this.DbAddRouteAddCostsLabel.Location = new System.Drawing.Point(185, 150);
+            this.DbAddRouteAddCostsLabel.Name = "DbAddRouteAddCostsLabel";
+            this.DbAddRouteAddCostsLabel.Size = new System.Drawing.Size(80, 13);
+            this.DbAddRouteAddCostsLabel.TabIndex = 17;
+            this.DbAddRouteAddCostsLabel.Text = "Доп. расходы:";
             // 
             // DbAddRouteEndLabel
             // 
@@ -222,71 +251,67 @@
             this.DbAddRouteEndLabel.TabIndex = 9;
             this.DbAddRouteEndLabel.Text = "Конец дороги:";
             // 
-            // DbAddRouteTimeLabel
+            // DbAddRouteFuelCostLabel
             // 
-            this.DbAddRouteTimeLabel.AutoSize = true;
-            this.DbAddRouteTimeLabel.Location = new System.Drawing.Point(90, 109);
-            this.DbAddRouteTimeLabel.Name = "DbAddRouteTimeLabel";
-            this.DbAddRouteTimeLabel.Size = new System.Drawing.Size(43, 13);
-            this.DbAddRouteTimeLabel.TabIndex = 16;
-            this.DbAddRouteTimeLabel.Text = "Время:";
+            this.DbAddRouteFuelCostLabel.Location = new System.Drawing.Point(20, 150);
+            this.DbAddRouteFuelCostLabel.Name = "DbAddRouteFuelCostLabel";
+            this.DbAddRouteFuelCostLabel.Size = new System.Drawing.Size(112, 13);
+            this.DbAddRouteFuelCostLabel.TabIndex = 16;
+            this.DbAddRouteFuelCostLabel.Text = "Стоимость топлива:";
             // 
-            // DbAddRouteEndSelector
+            // DbAddRouteDest
             // 
-            this.DbAddRouteEndSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.DbAddRouteEndSelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddRouteEndSelector.FormattingEnabled = true;
-            this.DbAddRouteEndSelector.IntegralHeight = false;
-            this.DbAddRouteEndSelector.Location = new System.Drawing.Point(5, 71);
-            this.DbAddRouteEndSelector.MaxDropDownItems = 10;
-            this.DbAddRouteEndSelector.MaxLength = 35;
-            this.DbAddRouteEndSelector.Name = "DbAddRouteEndSelector";
-            this.DbAddRouteEndSelector.Size = new System.Drawing.Size(240, 26);
-            this.DbAddRouteEndSelector.TabIndex = 12;
+            this.DbAddRouteDest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.DbAddRouteDest.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbAddRouteDest.FormattingEnabled = true;
+            this.DbAddRouteDest.IntegralHeight = false;
+            this.DbAddRouteDest.Location = new System.Drawing.Point(5, 71);
+            this.DbAddRouteDest.MaxDropDownItems = 10;
+            this.DbAddRouteDest.MaxLength = 35;
+            this.DbAddRouteDest.Name = "DbAddRouteDest";
+            this.DbAddRouteDest.Size = new System.Drawing.Size(320, 26);
+            this.DbAddRouteDest.TabIndex = 3;
             // 
-            // DbAddRouteCost
+            // DbAddRouteSpeedLimit
             // 
-            this.DbAddRouteCost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddRouteCost.Location = new System.Drawing.Point(175, 125);
-            this.DbAddRouteCost.MaxLength = 6;
-            this.DbAddRouteCost.Name = "DbAddRouteCost";
-            this.DbAddRouteCost.Size = new System.Drawing.Size(70, 22);
-            this.DbAddRouteCost.TabIndex = 15;
-            this.DbAddRouteCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.DbAddRouteSpeedLimit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbAddRouteSpeedLimit.Location = new System.Drawing.Point(185, 125);
+            this.DbAddRouteSpeedLimit.MaxLength = 9;
+            this.DbAddRouteSpeedLimit.Name = "DbAddRouteSpeedLimit";
+            this.DbAddRouteSpeedLimit.Size = new System.Drawing.Size(125, 22);
+            this.DbAddRouteSpeedLimit.TabIndex = 6;
             // 
             // DbAddRouteLengthLabel
             // 
             this.DbAddRouteLengthLabel.AutoSize = true;
-            this.DbAddRouteLengthLabel.Location = new System.Drawing.Point(5, 109);
+            this.DbAddRouteLengthLabel.Location = new System.Drawing.Point(20, 109);
             this.DbAddRouteLengthLabel.Name = "DbAddRouteLengthLabel";
             this.DbAddRouteLengthLabel.Size = new System.Drawing.Size(70, 13);
             this.DbAddRouteLengthLabel.TabIndex = 10;
             this.DbAddRouteLengthLabel.Text = "Расстояние:";
             // 
-            // DbAddRouteTime
+            // DbAddRouteFuelCost
             // 
-            this.DbAddRouteTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddRouteTime.Location = new System.Drawing.Point(90, 125);
-            this.DbAddRouteTime.MaxLength = 6;
-            this.DbAddRouteTime.Name = "DbAddRouteTime";
-            this.DbAddRouteTime.Size = new System.Drawing.Size(70, 22);
-            this.DbAddRouteTime.TabIndex = 14;
-            this.DbAddRouteTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.DbAddRouteFuelCost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbAddRouteFuelCost.Location = new System.Drawing.Point(20, 166);
+            this.DbAddRouteFuelCost.MaxLength = 8;
+            this.DbAddRouteFuelCost.Name = "DbAddRouteFuelCost";
+            this.DbAddRouteFuelCost.Size = new System.Drawing.Size(125, 22);
+            this.DbAddRouteFuelCost.TabIndex = 5;
             // 
             // DbAddRouteLength
             // 
             this.DbAddRouteLength.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbAddRouteLength.Location = new System.Drawing.Point(5, 125);
-            this.DbAddRouteLength.MaxLength = 6;
+            this.DbAddRouteLength.Location = new System.Drawing.Point(20, 125);
+            this.DbAddRouteLength.MaxLength = 8;
             this.DbAddRouteLength.Name = "DbAddRouteLength";
-            this.DbAddRouteLength.Size = new System.Drawing.Size(70, 22);
-            this.DbAddRouteLength.TabIndex = 7;
-            this.DbAddRouteLength.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.DbAddRouteLength.Size = new System.Drawing.Size(125, 22);
+            this.DbAddRouteLength.TabIndex = 4;
             // 
             // DbAddNewCityLabel
             // 
             this.DbAddNewCityLabel.AutoSize = true;
-            this.DbAddNewCityLabel.Location = new System.Drawing.Point(85, 68);
+            this.DbAddNewCityLabel.Location = new System.Drawing.Point(78, 68);
             this.DbAddNewCityLabel.Margin = new System.Windows.Forms.Padding(0);
             this.DbAddNewCityLabel.Name = "DbAddNewCityLabel";
             this.DbAddNewCityLabel.Size = new System.Drawing.Size(76, 13);
@@ -297,10 +322,10 @@
             // 
             this.DbAddBox.Controls.Add(this.DbAddRoute);
             this.DbAddBox.Controls.Add(this.DbAddCity);
-            this.DbAddBox.Location = new System.Drawing.Point(135, 15);
+            this.DbAddBox.Location = new System.Drawing.Point(168, 15);
             this.DbAddBox.Name = "DbAddBox";
             this.DbAddBox.Size = new System.Drawing.Size(140, 40);
-            this.DbAddBox.TabIndex = 6;
+            this.DbAddBox.TabIndex = 0;
             this.DbAddBox.TabStop = false;
             this.DbAddBox.Text = "Добавить";
             // 
@@ -329,6 +354,7 @@
             // 
             // DbDeleteTab
             // 
+            this.DbDeleteTab.Controls.Add(this.DbDeleteRouteAll);
             this.DbDeleteTab.Controls.Add(this.DbDeleteWarningLabel);
             this.DbDeleteTab.Controls.Add(this.DbDeleteRouteSelector);
             this.DbDeleteTab.Controls.Add(this.DbDeleteLabel);
@@ -338,9 +364,9 @@
             this.DbDeleteTab.Location = new System.Drawing.Point(4, 22);
             this.DbDeleteTab.Name = "DbDeleteTab";
             this.DbDeleteTab.Padding = new System.Windows.Forms.Padding(3);
-            this.DbDeleteTab.Size = new System.Drawing.Size(410, 296);
+            this.DbDeleteTab.Size = new System.Drawing.Size(480, 324);
             this.DbDeleteTab.TabIndex = 1;
-            this.DbDeleteTab.Text = "Удалить";
+            this.DbDeleteTab.Text = "    Удалить   ";
             this.DbDeleteTab.UseVisualStyleBackColor = true;
             // 
             // DbDeleteWarningLabel
@@ -348,7 +374,7 @@
             this.DbDeleteWarningLabel.AutoSize = true;
             this.DbDeleteWarningLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.DbDeleteWarningLabel.ForeColor = System.Drawing.Color.Red;
-            this.DbDeleteWarningLabel.Location = new System.Drawing.Point(88, 115);
+            this.DbDeleteWarningLabel.Location = new System.Drawing.Point(122, 115);
             this.DbDeleteWarningLabel.Name = "DbDeleteWarningLabel";
             this.DbDeleteWarningLabel.Size = new System.Drawing.Size(234, 30);
             this.DbDeleteWarningLabel.TabIndex = 6;
@@ -359,21 +385,19 @@
             // 
             this.DbDeleteRouteSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.DbDeleteRouteSelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbDeleteRouteSelector.FormatString = "{0} - {1} ({2}, {3}, {4})";
             this.DbDeleteRouteSelector.FormattingEnabled = true;
             this.DbDeleteRouteSelector.IntegralHeight = false;
-            this.DbDeleteRouteSelector.Location = new System.Drawing.Point(85, 84);
+            this.DbDeleteRouteSelector.Location = new System.Drawing.Point(78, 84);
             this.DbDeleteRouteSelector.MaxDropDownItems = 10;
             this.DbDeleteRouteSelector.Name = "DbDeleteRouteSelector";
-            this.DbDeleteRouteSelector.Size = new System.Drawing.Size(240, 26);
-            this.DbDeleteRouteSelector.TabIndex = 4;
+            this.DbDeleteRouteSelector.Size = new System.Drawing.Size(320, 26);
+            this.DbDeleteRouteSelector.TabIndex = 1;
             this.DbDeleteRouteSelector.Visible = false;
-            this.DbDeleteRouteSelector.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.DbDeleteRouteSelector_Format);
             // 
             // DbDeleteLabel
             // 
             this.DbDeleteLabel.AutoSize = true;
-            this.DbDeleteLabel.Location = new System.Drawing.Point(85, 68);
+            this.DbDeleteLabel.Location = new System.Drawing.Point(78, 68);
             this.DbDeleteLabel.Name = "DbDeleteLabel";
             this.DbDeleteLabel.Size = new System.Drawing.Size(92, 13);
             this.DbDeleteLabel.TabIndex = 3;
@@ -385,19 +409,19 @@
             this.DbDeleteCitySelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.DbDeleteCitySelector.FormattingEnabled = true;
             this.DbDeleteCitySelector.IntegralHeight = false;
-            this.DbDeleteCitySelector.Location = new System.Drawing.Point(85, 84);
+            this.DbDeleteCitySelector.Location = new System.Drawing.Point(78, 84);
             this.DbDeleteCitySelector.MaxDropDownItems = 10;
             this.DbDeleteCitySelector.Name = "DbDeleteCitySelector";
-            this.DbDeleteCitySelector.Size = new System.Drawing.Size(240, 26);
+            this.DbDeleteCitySelector.Size = new System.Drawing.Size(320, 26);
             this.DbDeleteCitySelector.TabIndex = 2;
             // 
             // DbDeleteButton
             // 
             this.DbDeleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbDeleteButton.Location = new System.Drawing.Point(158, 240);
+            this.DbDeleteButton.Location = new System.Drawing.Point(190, 270);
             this.DbDeleteButton.Name = "DbDeleteButton";
-            this.DbDeleteButton.Size = new System.Drawing.Size(94, 40);
-            this.DbDeleteButton.TabIndex = 1;
+            this.DbDeleteButton.Size = new System.Drawing.Size(100, 40);
+            this.DbDeleteButton.TabIndex = 2;
             this.DbDeleteButton.Text = "Удалить";
             this.DbDeleteButton.UseVisualStyleBackColor = true;
             this.DbDeleteButton.Click += new System.EventHandler(this.DbDeleteButton_Click);
@@ -406,7 +430,7 @@
             // 
             this.DbDeleteBox.Controls.Add(this.DbDeleteRoute);
             this.DbDeleteBox.Controls.Add(this.DbDeleteCity);
-            this.DbDeleteBox.Location = new System.Drawing.Point(135, 15);
+            this.DbDeleteBox.Location = new System.Drawing.Point(168, 15);
             this.DbDeleteBox.Name = "DbDeleteBox";
             this.DbDeleteBox.Size = new System.Drawing.Size(140, 40);
             this.DbDeleteBox.TabIndex = 0;
@@ -420,7 +444,6 @@
             this.DbDeleteRoute.Name = "DbDeleteRoute";
             this.DbDeleteRoute.Size = new System.Drawing.Size(63, 17);
             this.DbDeleteRoute.TabIndex = 1;
-            this.DbDeleteRoute.TabStop = true;
             this.DbDeleteRoute.Text = "Дорога";
             this.DbDeleteRoute.UseVisualStyleBackColor = true;
             this.DbDeleteRoute.CheckedChanged += new System.EventHandler(this.DbDeleteRoute_CheckedChanged);
@@ -450,15 +473,15 @@
             this.DbModTab.Location = new System.Drawing.Point(4, 22);
             this.DbModTab.Name = "DbModTab";
             this.DbModTab.Padding = new System.Windows.Forms.Padding(3);
-            this.DbModTab.Size = new System.Drawing.Size(410, 296);
+            this.DbModTab.Size = new System.Drawing.Size(480, 324);
             this.DbModTab.TabIndex = 5;
-            this.DbModTab.Text = "Редактировать";
+            this.DbModTab.Text = "    Редактировать   ";
             this.DbModTab.UseVisualStyleBackColor = true;
             // 
             // DbModNewOptions
             // 
             this.DbModNewOptions.AutoSize = true;
-            this.DbModNewOptions.Location = new System.Drawing.Point(85, 115);
+            this.DbModNewOptions.Location = new System.Drawing.Point(78, 115);
             this.DbModNewOptions.Name = "DbModNewOptions";
             this.DbModNewOptions.Size = new System.Drawing.Size(103, 13);
             this.DbModNewOptions.TabIndex = 10;
@@ -467,7 +490,7 @@
             // DbModLabel
             // 
             this.DbModLabel.AutoSize = true;
-            this.DbModLabel.Location = new System.Drawing.Point(85, 68);
+            this.DbModLabel.Location = new System.Drawing.Point(78, 68);
             this.DbModLabel.Name = "DbModLabel";
             this.DbModLabel.Size = new System.Drawing.Size(92, 13);
             this.DbModLabel.TabIndex = 9;
@@ -476,9 +499,9 @@
             // DbModButton
             // 
             this.DbModButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbModButton.Location = new System.Drawing.Point(158, 240);
+            this.DbModButton.Location = new System.Drawing.Point(190, 270);
             this.DbModButton.Name = "DbModButton";
-            this.DbModButton.Size = new System.Drawing.Size(94, 40);
+            this.DbModButton.Size = new System.Drawing.Size(100, 40);
             this.DbModButton.TabIndex = 8;
             this.DbModButton.Text = "Изменить";
             this.DbModButton.UseVisualStyleBackColor = true;
@@ -487,75 +510,97 @@
             // DbModNewCityName
             // 
             this.DbModNewCityName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbModNewCityName.Location = new System.Drawing.Point(85, 131);
+            this.DbModNewCityName.Location = new System.Drawing.Point(78, 131);
+            this.DbModNewCityName.MaxLength = 25;
             this.DbModNewCityName.Name = "DbModNewCityName";
-            this.DbModNewCityName.Size = new System.Drawing.Size(240, 26);
+            this.DbModNewCityName.Size = new System.Drawing.Size(320, 26);
             this.DbModNewCityName.TabIndex = 2;
             // 
             // DbModRouteOptions
             // 
-            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteCostLabel);
-            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteTimeLabel);
+            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteAddCostsLabel);
+            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteFuelCostLabel);
+            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteSpeedLimitLabel);
             this.DbModRouteOptions.Controls.Add(this.DbModNewRouteLengthLabel);
+            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteAddCosts);
             this.DbModRouteOptions.Controls.Add(this.DbModNewRouteLength);
-            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteTime);
-            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteCost);
-            this.DbModRouteOptions.Location = new System.Drawing.Point(80, 127);
+            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteSpeedLimit);
+            this.DbModRouteOptions.Controls.Add(this.DbModNewRouteFuelCost);
+            this.DbModRouteOptions.Location = new System.Drawing.Point(73, 127);
             this.DbModRouteOptions.Name = "DbModRouteOptions";
-            this.DbModRouteOptions.Size = new System.Drawing.Size(250, 61);
+            this.DbModRouteOptions.Size = new System.Drawing.Size(330, 130);
             this.DbModRouteOptions.TabIndex = 7;
             this.DbModRouteOptions.Visible = false;
             // 
-            // DbModNewRouteCostLabel
+            // DbModNewRouteAddCostsLabel
             // 
-            this.DbModNewRouteCostLabel.AutoSize = true;
-            this.DbModNewRouteCostLabel.Location = new System.Drawing.Point(175, 4);
-            this.DbModNewRouteCostLabel.Name = "DbModNewRouteCostLabel";
-            this.DbModNewRouteCostLabel.Size = new System.Drawing.Size(65, 13);
-            this.DbModNewRouteCostLabel.TabIndex = 9;
-            this.DbModNewRouteCostLabel.Text = "Стоимость:";
+            this.DbModNewRouteAddCostsLabel.AutoSize = true;
+            this.DbModNewRouteAddCostsLabel.Location = new System.Drawing.Point(185, 83);
+            this.DbModNewRouteAddCostsLabel.Name = "DbModNewRouteAddCostsLabel";
+            this.DbModNewRouteAddCostsLabel.Size = new System.Drawing.Size(80, 13);
+            this.DbModNewRouteAddCostsLabel.TabIndex = 23;
+            this.DbModNewRouteAddCostsLabel.Text = "Доп. расходы:";
             // 
-            // DbModNewRouteTimeLabel
+            // DbModNewRouteFuelCostLabel
             // 
-            this.DbModNewRouteTimeLabel.AutoSize = true;
-            this.DbModNewRouteTimeLabel.Location = new System.Drawing.Point(90, 4);
-            this.DbModNewRouteTimeLabel.Name = "DbModNewRouteTimeLabel";
-            this.DbModNewRouteTimeLabel.Size = new System.Drawing.Size(43, 13);
-            this.DbModNewRouteTimeLabel.TabIndex = 8;
-            this.DbModNewRouteTimeLabel.Text = "Время:";
+            this.DbModNewRouteFuelCostLabel.Location = new System.Drawing.Point(20, 83);
+            this.DbModNewRouteFuelCostLabel.Name = "DbModNewRouteFuelCostLabel";
+            this.DbModNewRouteFuelCostLabel.Size = new System.Drawing.Size(112, 13);
+            this.DbModNewRouteFuelCostLabel.TabIndex = 22;
+            this.DbModNewRouteFuelCostLabel.Text = "Стоимость топлива:";
+            // 
+            // DbModNewRouteSpeedLimitLabel
+            // 
+            this.DbModNewRouteSpeedLimitLabel.AutoSize = true;
+            this.DbModNewRouteSpeedLimitLabel.Location = new System.Drawing.Point(185, 42);
+            this.DbModNewRouteSpeedLimitLabel.Name = "DbModNewRouteSpeedLimitLabel";
+            this.DbModNewRouteSpeedLimitLabel.Size = new System.Drawing.Size(126, 13);
+            this.DbModNewRouteSpeedLimitLabel.TabIndex = 21;
+            this.DbModNewRouteSpeedLimitLabel.Text = "Ограничение скорости:";
             // 
             // DbModNewRouteLengthLabel
             // 
             this.DbModNewRouteLengthLabel.AutoSize = true;
-            this.DbModNewRouteLengthLabel.Location = new System.Drawing.Point(5, 4);
+            this.DbModNewRouteLengthLabel.Location = new System.Drawing.Point(20, 42);
             this.DbModNewRouteLengthLabel.Name = "DbModNewRouteLengthLabel";
             this.DbModNewRouteLengthLabel.Size = new System.Drawing.Size(70, 13);
-            this.DbModNewRouteLengthLabel.TabIndex = 7;
+            this.DbModNewRouteLengthLabel.TabIndex = 11;
             this.DbModNewRouteLengthLabel.Text = "Расстояние:";
+            // 
+            // DbModNewRouteAddCosts
+            // 
+            this.DbModNewRouteAddCosts.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbModNewRouteAddCosts.Location = new System.Drawing.Point(185, 99);
+            this.DbModNewRouteAddCosts.Name = "DbModNewRouteAddCosts";
+            this.DbModNewRouteAddCosts.Size = new System.Drawing.Size(125, 22);
+            this.DbModNewRouteAddCosts.TabIndex = 10;
             // 
             // DbModNewRouteLength
             // 
             this.DbModNewRouteLength.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbModNewRouteLength.Location = new System.Drawing.Point(5, 20);
+            this.DbModNewRouteLength.Location = new System.Drawing.Point(20, 58);
+            this.DbModNewRouteLength.MaxLength = 6;
             this.DbModNewRouteLength.Name = "DbModNewRouteLength";
-            this.DbModNewRouteLength.Size = new System.Drawing.Size(70, 22);
+            this.DbModNewRouteLength.Size = new System.Drawing.Size(125, 22);
             this.DbModNewRouteLength.TabIndex = 4;
             // 
-            // DbModNewRouteTime
+            // DbModNewRouteSpeedLimit
             // 
-            this.DbModNewRouteTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbModNewRouteTime.Location = new System.Drawing.Point(90, 20);
-            this.DbModNewRouteTime.Name = "DbModNewRouteTime";
-            this.DbModNewRouteTime.Size = new System.Drawing.Size(70, 22);
-            this.DbModNewRouteTime.TabIndex = 6;
+            this.DbModNewRouteSpeedLimit.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbModNewRouteSpeedLimit.Location = new System.Drawing.Point(185, 58);
+            this.DbModNewRouteSpeedLimit.MaxLength = 6;
+            this.DbModNewRouteSpeedLimit.Name = "DbModNewRouteSpeedLimit";
+            this.DbModNewRouteSpeedLimit.Size = new System.Drawing.Size(125, 22);
+            this.DbModNewRouteSpeedLimit.TabIndex = 6;
             // 
-            // DbModNewRouteCost
+            // DbModNewRouteFuelCost
             // 
-            this.DbModNewRouteCost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbModNewRouteCost.Location = new System.Drawing.Point(175, 20);
-            this.DbModNewRouteCost.Name = "DbModNewRouteCost";
-            this.DbModNewRouteCost.Size = new System.Drawing.Size(70, 22);
-            this.DbModNewRouteCost.TabIndex = 5;
+            this.DbModNewRouteFuelCost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbModNewRouteFuelCost.Location = new System.Drawing.Point(20, 99);
+            this.DbModNewRouteFuelCost.MaxLength = 6;
+            this.DbModNewRouteFuelCost.Name = "DbModNewRouteFuelCost";
+            this.DbModNewRouteFuelCost.Size = new System.Drawing.Size(125, 22);
+            this.DbModNewRouteFuelCost.TabIndex = 5;
             // 
             // DbModRouteSelector
             // 
@@ -564,10 +609,10 @@
             this.DbModRouteSelector.FormattingEnabled = true;
             this.DbModRouteSelector.IntegralHeight = false;
             this.DbModRouteSelector.ItemHeight = 18;
-            this.DbModRouteSelector.Location = new System.Drawing.Point(85, 84);
+            this.DbModRouteSelector.Location = new System.Drawing.Point(78, 84);
             this.DbModRouteSelector.MaxDropDownItems = 10;
             this.DbModRouteSelector.Name = "DbModRouteSelector";
-            this.DbModRouteSelector.Size = new System.Drawing.Size(240, 26);
+            this.DbModRouteSelector.Size = new System.Drawing.Size(320, 26);
             this.DbModRouteSelector.TabIndex = 3;
             this.DbModRouteSelector.Visible = false;
             this.DbModRouteSelector.SelectedIndexChanged += new System.EventHandler(this.DbModRouteSelector_SelectedIndexChanged);
@@ -578,10 +623,10 @@
             this.DbModCitySelector.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.DbModCitySelector.FormattingEnabled = true;
             this.DbModCitySelector.IntegralHeight = false;
-            this.DbModCitySelector.Location = new System.Drawing.Point(85, 84);
+            this.DbModCitySelector.Location = new System.Drawing.Point(78, 84);
             this.DbModCitySelector.MaxDropDownItems = 10;
             this.DbModCitySelector.Name = "DbModCitySelector";
-            this.DbModCitySelector.Size = new System.Drawing.Size(240, 26);
+            this.DbModCitySelector.Size = new System.Drawing.Size(320, 26);
             this.DbModCitySelector.TabIndex = 1;
             this.DbModCitySelector.SelectedIndexChanged += new System.EventHandler(this.DbModCitySelector_SelectedIndexChanged);
             // 
@@ -589,7 +634,7 @@
             // 
             this.DbModBox.Controls.Add(this.DbModRoute);
             this.DbModBox.Controls.Add(this.DbModCity);
-            this.DbModBox.Location = new System.Drawing.Point(135, 15);
+            this.DbModBox.Location = new System.Drawing.Point(168, 15);
             this.DbModBox.Name = "DbModBox";
             this.DbModBox.Size = new System.Drawing.Size(140, 40);
             this.DbModBox.TabIndex = 0;
@@ -624,9 +669,9 @@
             this.DbCitiesTab.Controls.Add(this.DbCitiesList);
             this.DbCitiesTab.Location = new System.Drawing.Point(4, 22);
             this.DbCitiesTab.Name = "DbCitiesTab";
-            this.DbCitiesTab.Size = new System.Drawing.Size(410, 296);
+            this.DbCitiesTab.Size = new System.Drawing.Size(480, 324);
             this.DbCitiesTab.TabIndex = 2;
-            this.DbCitiesTab.Text = "Города";
+            this.DbCitiesTab.Text = "    Города   ";
             this.DbCitiesTab.UseVisualStyleBackColor = true;
             // 
             // DbCitiesList
@@ -635,11 +680,11 @@
             this.DbCitiesList.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.DbCitiesList.FormattingEnabled = true;
             this.DbCitiesList.ItemHeight = 20;
-            this.DbCitiesList.Location = new System.Drawing.Point(0, 10);
+            this.DbCitiesList.Location = new System.Drawing.Point(0, 11);
             this.DbCitiesList.MultiColumn = true;
             this.DbCitiesList.Name = "DbCitiesList";
             this.DbCitiesList.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.DbCitiesList.Size = new System.Drawing.Size(410, 284);
+            this.DbCitiesList.Size = new System.Drawing.Size(480, 304);
             this.DbCitiesList.Sorted = true;
             this.DbCitiesList.TabIndex = 0;
             // 
@@ -648,9 +693,9 @@
             this.DbRoutesTab.Controls.Add(this.DbRoutesDataGrid);
             this.DbRoutesTab.Location = new System.Drawing.Point(4, 22);
             this.DbRoutesTab.Name = "DbRoutesTab";
-            this.DbRoutesTab.Size = new System.Drawing.Size(410, 296);
+            this.DbRoutesTab.Size = new System.Drawing.Size(480, 324);
             this.DbRoutesTab.TabIndex = 3;
-            this.DbRoutesTab.Text = "Дороги";
+            this.DbRoutesTab.Text = "    Дороги   ";
             this.DbRoutesTab.UseVisualStyleBackColor = true;
             // 
             // DbRoutesDataGrid
@@ -663,85 +708,21 @@
             this.DbRoutesDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DbRoutesDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DbRoutesDataGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.DbRouoteColumn0,
             this.DbRoutesColumn1,
             this.DbRoutesColumn2,
             this.DbRoutesColumn3,
             this.DbRoutesColumn4,
+            this.DbRoutesColumn6,
             this.DbRoutesColumn5});
             this.DbRoutesDataGrid.GridColor = System.Drawing.SystemColors.Desktop;
-            this.DbRoutesDataGrid.Location = new System.Drawing.Point(0, 0);
+            this.DbRoutesDataGrid.Location = new System.Drawing.Point(-1, 0);
             this.DbRoutesDataGrid.Name = "DbRoutesDataGrid";
             this.DbRoutesDataGrid.ReadOnly = true;
             this.DbRoutesDataGrid.RowHeadersVisible = false;
             this.DbRoutesDataGrid.RowHeadersWidth = 15;
             this.DbRoutesDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DbRoutesDataGrid.Size = new System.Drawing.Size(410, 296);
+            this.DbRoutesDataGrid.Size = new System.Drawing.Size(480, 324);
             this.DbRoutesDataGrid.TabIndex = 0;
-            // 
-            // DbRouoteColumn0
-            // 
-            this.DbRouoteColumn0.HeaderText = "№";
-            this.DbRouoteColumn0.MaxInputLength = 3;
-            this.DbRouoteColumn0.Name = "DbRouoteColumn0";
-            this.DbRouoteColumn0.ReadOnly = true;
-            this.DbRouoteColumn0.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.DbRouoteColumn0.Width = 27;
-            // 
-            // DbRoutesColumn1
-            // 
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.DbRoutesColumn1.DefaultCellStyle = dataGridViewCellStyle1;
-            this.DbRoutesColumn1.HeaderText = "Начало";
-            this.DbRoutesColumn1.MaxInputLength = 25;
-            this.DbRoutesColumn1.Name = "DbRoutesColumn1";
-            this.DbRoutesColumn1.ReadOnly = true;
-            this.DbRoutesColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.DbRoutesColumn1.Width = 109;
-            // 
-            // DbRoutesColumn2
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.DbRoutesColumn2.DefaultCellStyle = dataGridViewCellStyle2;
-            this.DbRoutesColumn2.HeaderText = "Конец";
-            this.DbRoutesColumn2.MaxInputLength = 25;
-            this.DbRoutesColumn2.Name = "DbRoutesColumn2";
-            this.DbRoutesColumn2.ReadOnly = true;
-            this.DbRoutesColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.DbRoutesColumn2.Width = 109;
-            // 
-            // DbRoutesColumn3
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DbRoutesColumn3.DefaultCellStyle = dataGridViewCellStyle3;
-            this.DbRoutesColumn3.HeaderText = "Длина";
-            this.DbRoutesColumn3.MaxInputLength = 6;
-            this.DbRoutesColumn3.Name = "DbRoutesColumn3";
-            this.DbRoutesColumn3.ReadOnly = true;
-            this.DbRoutesColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.DbRoutesColumn3.Width = 49;
-            // 
-            // DbRoutesColumn4
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DbRoutesColumn4.DefaultCellStyle = dataGridViewCellStyle4;
-            this.DbRoutesColumn4.HeaderText = "Время";
-            this.DbRoutesColumn4.MaxInputLength = 6;
-            this.DbRoutesColumn4.Name = "DbRoutesColumn4";
-            this.DbRoutesColumn4.ReadOnly = true;
-            this.DbRoutesColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.DbRoutesColumn4.Width = 49;
-            // 
-            // DbRoutesColumn5
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.DbRoutesColumn5.DefaultCellStyle = dataGridViewCellStyle5;
-            this.DbRoutesColumn5.HeaderText = "Цена";
-            this.DbRoutesColumn5.MaxInputLength = 6;
-            this.DbRoutesColumn5.Name = "DbRoutesColumn5";
-            this.DbRoutesColumn5.ReadOnly = true;
-            this.DbRoutesColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.DbRoutesColumn5.Width = 49;
             // 
             // DbLogTab
             // 
@@ -749,9 +730,9 @@
             this.DbLogTab.Controls.Add(this.DbClearLog);
             this.DbLogTab.Location = new System.Drawing.Point(4, 22);
             this.DbLogTab.Name = "DbLogTab";
-            this.DbLogTab.Size = new System.Drawing.Size(410, 296);
+            this.DbLogTab.Size = new System.Drawing.Size(480, 324);
             this.DbLogTab.TabIndex = 4;
-            this.DbLogTab.Text = "История";
+            this.DbLogTab.Text = "    История   ";
             this.DbLogTab.UseVisualStyleBackColor = true;
             // 
             // DbLogText
@@ -759,7 +740,8 @@
             this.DbLogText.Location = new System.Drawing.Point(0, 0);
             this.DbLogText.MaxLength = 10000;
             this.DbLogText.Name = "DbLogText";
-            this.DbLogText.Size = new System.Drawing.Size(410, 255);
+            this.DbLogText.ReadOnly = true;
+            this.DbLogText.Size = new System.Drawing.Size(480, 284);
             this.DbLogText.TabIndex = 1;
             this.DbLogText.Text = "";
             this.DbLogText.WordWrap = false;
@@ -767,10 +749,10 @@
             // DbClearLog
             // 
             this.DbClearLog.AutoSize = true;
-            this.DbClearLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DbClearLog.Location = new System.Drawing.Point(163, 260);
+            this.DbClearLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DbClearLog.Location = new System.Drawing.Point(190, 290);
             this.DbClearLog.Name = "DbClearLog";
-            this.DbClearLog.Size = new System.Drawing.Size(84, 28);
+            this.DbClearLog.Size = new System.Drawing.Size(90, 28);
             this.DbClearLog.TabIndex = 0;
             this.DbClearLog.Text = "Очистить";
             this.DbClearLog.UseVisualStyleBackColor = true;
@@ -787,9 +769,9 @@
             this.DbActionResult.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DbActionSuccessLabel,
             this.DbActionErrorLabel});
-            this.DbActionResult.Location = new System.Drawing.Point(0, 319);
+            this.DbActionResult.Location = new System.Drawing.Point(0, 349);
             this.DbActionResult.Name = "DbActionResult";
-            this.DbActionResult.Size = new System.Drawing.Size(414, 22);
+            this.DbActionResult.Size = new System.Drawing.Size(484, 22);
             this.DbActionResult.SizingGrip = false;
             this.DbActionResult.TabIndex = 9;
             // 
@@ -804,15 +786,99 @@
             this.DbActionErrorLabel.Name = "DbActionErrorLabel";
             this.DbActionErrorLabel.Size = new System.Drawing.Size(0, 17);
             // 
+            // DbRoutesColumn1
+            // 
+            this.DbRoutesColumn1.DataPropertyName = "FirstCity";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.DbRoutesColumn1.DefaultCellStyle = dataGridViewCellStyle1;
+            this.DbRoutesColumn1.HeaderText = "Начало";
+            this.DbRoutesColumn1.MaxInputLength = 25;
+            this.DbRoutesColumn1.Name = "DbRoutesColumn1";
+            this.DbRoutesColumn1.ReadOnly = true;
+            this.DbRoutesColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.DbRoutesColumn1.Width = 122;
+            // 
+            // DbRoutesColumn2
+            // 
+            this.DbRoutesColumn2.DataPropertyName = "SecondCity";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.DbRoutesColumn2.DefaultCellStyle = dataGridViewCellStyle2;
+            this.DbRoutesColumn2.HeaderText = "Конец";
+            this.DbRoutesColumn2.MaxInputLength = 25;
+            this.DbRoutesColumn2.Name = "DbRoutesColumn2";
+            this.DbRoutesColumn2.ReadOnly = true;
+            this.DbRoutesColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.DbRoutesColumn2.Width = 122;
+            // 
+            // DbRoutesColumn3
+            // 
+            this.DbRoutesColumn3.DataPropertyName = "Length";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DbRoutesColumn3.DefaultCellStyle = dataGridViewCellStyle3;
+            this.DbRoutesColumn3.HeaderText = "Расстоя ние";
+            this.DbRoutesColumn3.MaxInputLength = 8;
+            this.DbRoutesColumn3.Name = "DbRoutesColumn3";
+            this.DbRoutesColumn3.ReadOnly = true;
+            this.DbRoutesColumn3.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.DbRoutesColumn3.Width = 59;
+            // 
+            // DbRoutesColumn4
+            // 
+            this.DbRoutesColumn4.DataPropertyName = "FuelCost";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DbRoutesColumn4.DefaultCellStyle = dataGridViewCellStyle4;
+            this.DbRoutesColumn4.HeaderText = "Цена бензина";
+            this.DbRoutesColumn4.MaxInputLength = 8;
+            this.DbRoutesColumn4.Name = "DbRoutesColumn4";
+            this.DbRoutesColumn4.ReadOnly = true;
+            this.DbRoutesColumn4.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.DbRoutesColumn4.Width = 59;
+            // 
+            // DbRoutesColumn6
+            // 
+            this.DbRoutesColumn6.DataPropertyName = "SpeedLimit";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DbRoutesColumn6.DefaultCellStyle = dataGridViewCellStyle5;
+            this.DbRoutesColumn6.HeaderText = "Макс. скорость";
+            this.DbRoutesColumn6.MaxInputLength = 8;
+            this.DbRoutesColumn6.Name = "DbRoutesColumn6";
+            this.DbRoutesColumn6.ReadOnly = true;
+            this.DbRoutesColumn6.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.DbRoutesColumn6.Width = 59;
+            // 
+            // DbRoutesColumn5
+            // 
+            this.DbRoutesColumn5.DataPropertyName = "AddCosts";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            this.DbRoutesColumn5.DefaultCellStyle = dataGridViewCellStyle6;
+            this.DbRoutesColumn5.HeaderText = "Доп. расходы";
+            this.DbRoutesColumn5.MaxInputLength = 8;
+            this.DbRoutesColumn5.Name = "DbRoutesColumn5";
+            this.DbRoutesColumn5.ReadOnly = true;
+            this.DbRoutesColumn5.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.DbRoutesColumn5.Width = 59;
+            // 
+            // DbDeleteRouteAll
+            // 
+            this.DbDeleteRouteAll.AutoSize = true;
+            this.DbDeleteRouteAll.Location = new System.Drawing.Point(195, 124);
+            this.DbDeleteRouteAll.Name = "DbDeleteRouteAll";
+            this.DbDeleteRouteAll.Size = new System.Drawing.Size(90, 17);
+            this.DbDeleteRouteAll.TabIndex = 7;
+            this.DbDeleteRouteAll.Text = "Удалить все";
+            this.DbDeleteRouteAll.UseVisualStyleBackColor = true;
+            this.DbDeleteRouteAll.Visible = false;
+            // 
             // DbForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(414, 341);
+            this.ClientSize = new System.Drawing.Size(484, 371);
             this.Controls.Add(this.DbActionResult);
             this.Controls.Add(this.DbTabs);
             this.Enabled = false;
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "DbForm";
@@ -871,13 +937,13 @@
         private System.Windows.Forms.ComboBox DbDeleteCitySelector;
         private System.Windows.Forms.ComboBox DbDeleteRouteSelector;
         private System.Windows.Forms.Timer DbShowResultTimer;
-        private System.Windows.Forms.ComboBox DbAddRouteStartSelector;
-        private System.Windows.Forms.ComboBox DbAddRouteEndSelector;
+        private System.Windows.Forms.ComboBox DbAddRouteSource;
+        private System.Windows.Forms.ComboBox DbAddRouteDest;
         private System.Windows.Forms.Label DbDeleteWarningLabel;
-        private System.Windows.Forms.Label DbAddRouteCostLabel;
-        private System.Windows.Forms.Label DbAddRouteTimeLabel;
-        private System.Windows.Forms.TextBox DbAddRouteCost;
-        private System.Windows.Forms.TextBox DbAddRouteTime;
+        private System.Windows.Forms.Label DbAddRouteAddCostsLabel;
+        private System.Windows.Forms.Label DbAddRouteFuelCostLabel;
+        private System.Windows.Forms.TextBox DbAddRouteSpeedLimit;
+        private System.Windows.Forms.TextBox DbAddRouteFuelCost;
         private System.Windows.Forms.Panel DbAddRouteOptions;
         private System.Windows.Forms.Label DbAddRouteStartLabel;
         private System.Windows.Forms.StatusStrip DbActionResult;
@@ -890,15 +956,9 @@
         private System.Windows.Forms.Button DbClearLog;
         private System.Windows.Forms.ToolStripStatusLabel DbActionErrorLabel;
         private System.Windows.Forms.ListBox DbCitiesList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DbRouoteColumn0;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn5;
         private System.Windows.Forms.TabPage DbModTab;
-        private System.Windows.Forms.TextBox DbModNewRouteTime;
-        private System.Windows.Forms.TextBox DbModNewRouteCost;
+        private System.Windows.Forms.TextBox DbModNewRouteSpeedLimit;
+        private System.Windows.Forms.TextBox DbModNewRouteFuelCost;
         private System.Windows.Forms.TextBox DbModNewRouteLength;
         private System.Windows.Forms.ComboBox DbModRouteSelector;
         private System.Windows.Forms.TextBox DbModNewCityName;
@@ -908,10 +968,21 @@
         private System.Windows.Forms.RadioButton DbModCity;
         private System.Windows.Forms.Panel DbModRouteOptions;
         private System.Windows.Forms.Button DbModButton;
-        private System.Windows.Forms.Label DbModNewRouteCostLabel;
-        private System.Windows.Forms.Label DbModNewRouteTimeLabel;
-        private System.Windows.Forms.Label DbModNewRouteLengthLabel;
         private System.Windows.Forms.Label DbModLabel;
         private System.Windows.Forms.Label DbModNewOptions;
+        private System.Windows.Forms.TextBox DbModNewRouteAddCosts;
+        private System.Windows.Forms.TextBox DbAddRouteAddCosts;
+        private System.Windows.Forms.Label DbAddRouteSpeedLimitLabel;
+        private System.Windows.Forms.Label DbModNewRouteLengthLabel;
+        private System.Windows.Forms.Label DbModNewRouteSpeedLimitLabel;
+        private System.Windows.Forms.Label DbModNewRouteAddCostsLabel;
+        private System.Windows.Forms.Label DbModNewRouteFuelCostLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DbRoutesColumn5;
+        private System.Windows.Forms.CheckBox DbDeleteRouteAll;
     }
 }
