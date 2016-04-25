@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,7 +13,8 @@ namespace main
     {
         MainForm Db;
         bool shifted = false;
-        LogProcessor Logger;
+        LocalLogProcessor LocalLogger;
+        OuterLogProcessor OuterLogger;
         List<string> LocalCities;
         List<CRoute> LocalRoutes;
         BindingSource[] bindings;
@@ -24,7 +26,8 @@ namespace main
             Db = db;
             Db.Enabled = false;
             Db.Visible = false;
-            Logger = new LogProcessor();
+            OuterLogger = new OuterLogProcessor(Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.LastIndexOf('\\'))));
+            LocalLogger = new LocalLogProcessor(DbLogText, OuterLogger);
             LocalCities = Db.Data.GetCitiesList();
             LocalRoutes = Db.Data.GetRoutesList();
             bindings = new BindingSource[7];
@@ -48,29 +51,18 @@ namespace main
             for (int i = 0; i < 7; i++)
                 bindings[i].ResetBindings(false);
             DGDataSource.ResetBindings(false);
-        }
-
-        private void DbRoutesRefresh()
-        {
-            //for (int i = 0; i < parent.routes.Count; i++)
-            //    DbRoutesDataGrid.Rows.Add(i + 1, parent.routes[i].FirstCity, parent.routes[i].SecondCity, parent.routes[i].Options[0], parent.routes[i].Options[1], parent.routes[i].Options[2]);
-            if (DbRoutesDataGrid.Rows.Count > 12)
+            if (LocalCities.Count > 12)
             {
-                DbRoutesColumn1.Width = 109;
-                DbRoutesColumn2.Width = 109;
+                DbRoutesColumn1.Width -= 9;
+                DbRoutesColumn2.Width -= 8;
             }
             else
             {
-                DbRoutesColumn1.Width = 118;
-                DbRoutesColumn2.Width = 117;
+                DbRoutesColumn1.Width += 9;
+                DbRoutesColumn2.Width += 8;
             }
         }
 
-        private void DbForm_Load(object sender, EventArgs e)
-        {
-            DbLogText.Lines = Logger.GetLocalRows();
-            DbLogText.AppendText("\n");
-        }
         private void DbAddRoute_CheckedChanged(object sender, EventArgs e)
         {
             if (DbAddRoute.Checked)
@@ -88,7 +80,7 @@ namespace main
         }
         private void DbForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Logger.UploadLog();
+            OuterLogger.UploadLog();
             Db.Visible = true;
             Db.Enabled = true;
             Db.refresh();
@@ -154,8 +146,8 @@ namespace main
         }
         private void DbClearLog_Click(object sender, EventArgs e)
         {
-            Logger.ClearLog();
-            DbLogText.Clear();
+            LocalLogger.ClearLog();
+            OuterLogger.ClearLog();
             DbActionSuccessLabel.Text = "История очищена";
         }
         private void DbModRoute_CheckedChanged(object sender, EventArgs e)
@@ -296,7 +288,7 @@ namespace main
                 case DbOperation.DB_MOD_ROUTE:
                     {
                         DbActionSuccessLabel.Text = string.Format("Изменен {0} - {1}: ({2}, {3}, {4}, {5}) на ({6}, {7}, {8}, {9})", args);
-                        LocalRoutes[DbModRouteSelector.SelectedIndex] = (new CRoute(args[0].ToString(), args[1].ToString(), int.Parse(args[2].ToString()), int.Parse(args[3].ToString()), int.Parse(args[4].ToString()), int.Parse(args[5].ToString())));
+                        LocalRoutes[DbModRouteSelector.SelectedIndex] = new CRoute(args[0].ToString(), args[1].ToString(), int.Parse(args[6].ToString()), int.Parse(args[7].ToString()), int.Parse(args[8].ToString()), int.Parse(args[9].ToString()));
                         DbModNewRouteAddCosts.Clear();
                         DbModNewRouteFuelCost.Clear();
                         DbModNewRouteLength.Clear();
@@ -315,8 +307,8 @@ namespace main
                 case DBActionResult.OK:
                 {
                     DbInterfaceRefresh(DbOperation.DB_ADD_CITY, city);
-                    Logger.AddRow(DbOperation.DB_ADD_CITY, city);
-                    DbLogText.AppendText(LogProcessor.GetLocalLogRow(DbOperation.DB_ADD_CITY, city));
+                    LocalLogger.AddRow(DbOperation.DB_ADD_CITY, city);
+                    OuterLogger.AddRow(DbOperation.DB_ADD_CITY, city);
                     break;
                 }
                 case DBActionResult.CITY_ALREADY_EXISTS:
@@ -349,8 +341,8 @@ namespace main
                     case DBActionResult.OK:
                     {
                         DbInterfaceRefresh(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
-                        Logger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
-                        DbLogText.AppendText(LogProcessor.GetLocalLogRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost));
+                        OuterLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
+                        LocalLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
                         break;
                     }
                     case DBActionResult.ROUTE_SOURCE_EQUALS_DEST:
@@ -389,8 +381,8 @@ namespace main
             {
                 case DBActionResult.OK:
                     {
-                        DbLogText.AppendText(LogProcessor.GetLocalLogRow(DbOperation.DB_REMOVE_CITY, city));
-                        Logger.AddRow(DbOperation.DB_REMOVE_CITY, city);
+                        OuterLogger.AddRow(DbOperation.DB_REMOVE_CITY, city);
+                        LocalLogger.AddRow(DbOperation.DB_REMOVE_CITY, city);
                         DbInterfaceRefresh(DbOperation.DB_REMOVE_CITY, city);
                         break;
                     }
@@ -412,8 +404,8 @@ namespace main
             {
                 case DBActionResult.OK:
                     {
-                        DbLogText.AppendText(LogProcessor.GetLocalLogRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts));
-                        Logger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
+                        LocalLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
+                        OuterLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
                         DbInterfaceRefresh(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
                         break;
                     }
@@ -431,8 +423,8 @@ namespace main
             {
                 case DBActionResult.OK:
                     {
-                        DbLogText.AppendText(LogProcessor.GetLocalLogRow(DbOperation.DB_MOD_CITY, oldcity, newcity));
-                        Logger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
+                        LocalLogger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
+                        OuterLogger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         DbInterfaceRefresh(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         break;
                     }
@@ -470,19 +462,19 @@ namespace main
                 {
                     case DBActionResult.OK:
                         {
-                            Logger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
-                            DbLogText.AppendText(LogProcessor.GetLocalLogRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac));
+                            LocalLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
+                            OuterLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
                             DbInterfaceRefresh(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
                             break;
                         }
                     case DBActionResult.ROUTE_NOT_CHANGED:
                         {
-                            DBShowError("Предупреждение: параметры дороги не изменены");
+                            DBShowError("Параметры дороги не изменены");
                             break;
                         }
                     case DBActionResult.SAME_ROUTE_ALREADY_EXISTS:
                         {
-                            DBShowError("Ошибка: дорога с такими параметрами уже существует");
+                            DBShowError("Ошибка: другая дорога уже имеет такие параметры");
                             break;
                         }
                     case DBActionResult.INVALID_VALUES:

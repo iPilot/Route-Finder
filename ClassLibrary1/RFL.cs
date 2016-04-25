@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace RouteFinderLibrary
 {
@@ -98,7 +99,7 @@ namespace RouteFinderLibrary
         }
         public List<string> GetCitiesList()
         {
-            return new List<string>(Cities);
+            return Cities.ToList();
         }
         public List<CRoute> GetRoutesList()
         {
@@ -108,7 +109,6 @@ namespace RouteFinderLibrary
                     tmp.Add(CRoute.Create(roads.Key, road));
             return tmp;
         }
-
         bool CheckValues(params int[] _values)
         {
             if (_values.Length != 4) return false;
@@ -140,7 +140,6 @@ namespace RouteFinderLibrary
             }
             return new string(tmp);
         }
-
         public DBActionResult AddCity(string city)
         {
             if (string.IsNullOrEmpty(city)) return DBActionResult.EMPTY_CITY;
@@ -190,7 +189,10 @@ namespace RouteFinderLibrary
             else
             {
                 foreach (var key in Routes.Where(x => x.Key.Item1 == city || x.Key.Item2 == city).ToList())
+                {
                     Routes.Remove(key.Key);
+                    RoutesCount -= key.Value.Count;
+                }
                 return (Cities.Remove(city) ? DBActionResult.OK : DBActionResult.CITY_NOT_EXISTS);
             }
         }
@@ -201,11 +203,16 @@ namespace RouteFinderLibrary
                 return DBActionResult.ROUTE_NOT_EXISTS;
             else
             {
-                RoutesCount--;
                 if (all)
+                {
+                    RoutesCount -= Routes[key].Count;
                     return (Routes.Remove(key) ? DBActionResult.OK : DBActionResult.ROUTE_NOT_EXISTS);
+                }
                 else
+                {
+                    RoutesCount--;
                     return (Routes[key].RemoveAll(x => x.Length == route.Length && x.SpeedLimit == route.SpeedLimit && x.FuelCost == route.FuelCost && x.AddCosts == route.AddCosts) > 0 ? DBActionResult.OK : DBActionResult.ROUTE_NOT_EXISTS);
+                }
             }
         }
         public DBActionResult ModCity(string city, string newcity)
@@ -220,22 +227,24 @@ namespace RouteFinderLibrary
         }
         public DBActionResult ModRoute(CRoute route, int newlen, int newfcost, int newspeed, int newaddcost)
         {
+            int id;
             if (route == null) return DBActionResult.ROUTE_NOT_EXISTS;
             var key = new Tuple<string, string>(route.FirstCity, route.SecondCity);
             if (!Routes.ContainsKey(key))
                 return DBActionResult.ROUTE_NOT_EXISTS;
-            else if (!Routes[key].Exists(x => x.Length == route.Length && x.SpeedLimit == route.SpeedLimit && x.FuelCost == route.FuelCost && x.AddCosts == route.AddCosts))
+            else if ((id = Routes[key].FindIndex(x => x.Length == route.Length && x.SpeedLimit == route.SpeedLimit && x.FuelCost == route.FuelCost && x.AddCosts == route.AddCosts)) < 0)
                 return DBActionResult.ROUTE_NOT_EXISTS;
             else if (!CheckValues(newlen, newfcost, newspeed, newaddcost))
                 return DBActionResult.INVALID_VALUES;
             else
             {
                 var tmp = new RouteParams(newlen, newfcost, newspeed, newaddcost);
-                if (Routes[key].Contains(tmp)) return DBActionResult.ROUTE_NOT_CHANGED;
+                if (tmp.Equals(route.Options)) return DBActionResult.ROUTE_NOT_CHANGED;
+                int k = Routes[key].FindIndex(x => x.Length == tmp.Length && x.SpeedLimit == tmp.SpeedLimit && x.FuelCost == tmp.FuelCost && x.AddCosts == tmp.AddCosts);
+                if (k >= 0) return DBActionResult.SAME_ROUTE_ALREADY_EXISTS;
                 else
                 {
-                    Routes[key].Add(tmp);
-                    Routes[key].Remove(route.Options);
+                    Routes[key][id] = tmp;
                     return DBActionResult.OK;
                 }
             }
@@ -304,7 +313,6 @@ namespace RouteFinderLibrary
                 return DBActionResult.DBFILE_NOT_FOUND;
             }
         }
-
         public void DbUpload()
         {
             if (DbLoaded)
@@ -430,10 +438,6 @@ namespace RouteFinderLibrary
             if (DbLoaded) DbUpload();
         }
     }
-    /// <summary>
-    /// Определяет параметры маршрута:
-    ///     расстояние, стоимость топлива на участке и дополнительные расходы
-    /// </summary>
     public class CRoute
     {
         public string FirstCity { get; }
@@ -482,8 +486,7 @@ namespace RouteFinderLibrary
            return new CRoute(key.Item1, key.Item2, value.Length, value.FuelCost, value.SpeedLimit, value.AddCosts);
         }
     }
-
-    public class LogProcessor
+    public class __LogProcessor
     {
         const int MaxRows = 50;
         string[] data;
@@ -496,7 +499,7 @@ namespace RouteFinderLibrary
         string localpath;
         string LogDefaultFileName;
 
-        public LogProcessor()
+        public __LogProcessor()
         {
             LogDefaultFileName = "routefinder.log";
             localpath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.LastIndexOf('\\')), LogDefaultFileName);
@@ -543,57 +546,7 @@ namespace RouteFinderLibrary
         public void AddRow(DbOperation operation, params object[] args)
         {
             string timestamp = string.Format("{0:dd,MM,yyyy,HH,mm,ss},", DateTime.Now);
-            switch (operation)
-            {
-                case DbOperation.DB_ADD_CITY:
-                    {
-                        if (args.Length != 1)
-                            throw new ArgumentException("Operation args");
-                        else
-                            newdata.Add(timestamp + string.Format("add,c,{0}", args));
-                        break;
-                    }
-                case DbOperation.DB_ADD_ROUTE:
-                    {
-                        if (args.Length != 6)
-                            throw new ArgumentException("Operation args");
-                        else
-                            newdata.Add(timestamp + string.Format("add,r,{0},{1},{2},{3},{4},{5}", args));
-                        break;
-                    }
-                case DbOperation.DB_REMOVE_CITY:
-                    {
-                        if (args.Length != 1)
-                            throw new ArgumentException("Operation args");
-                        else
-                            newdata.Add(timestamp + string.Format("del,c,{0}", args));
-                        break;
-                    }
-                case DbOperation.DB_REMOVE_ROUTE:
-                    {
-                        if (args.Length != 6)
-                            throw new ArgumentException("Operation args");
-                        else
-                            newdata.Add(timestamp + string.Format("del,r,{0},{1},{2},{3},{4},{5}", args));
-                        break;
-                    }
-                case DbOperation.DB_MOD_CITY:
-                    {
-                        if (args.Length != 2)
-                            throw new ArgumentException("Operation args");
-                        else
-                            newdata.Add(timestamp + string.Format("mod,c,{0},{1}", args));
-                        break;
-                    }
-                case DbOperation.DB_MOD_ROUTE:
-                    {
-                        if (args.Length != 10)
-                            throw new ArgumentException("Operation args");
-                        else
-                            newdata.Add(timestamp + string.Format("mod,r,{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", args));
-                        break;
-                    }
-            }
+            
         }
         public static string GetLocalLogRow(DbOperation operation, params object[] args)
         {
@@ -665,19 +618,7 @@ namespace RouteFinderLibrary
                         return null;
                 }
             }
-            catch (IndexOutOfRangeException)
-            {
-                return null;
-            }
-            catch (ArgumentException)
-            {
-                return null;
-            }
-            catch (FormatException)
-            {
-                return null;
-            }
-            catch (NullReferenceException)
+            catch (Exception)
             {
                 return null;
             }
@@ -741,6 +682,224 @@ namespace RouteFinderLibrary
             position = 0;
         }
     }
-}
+    public class AutoParams
+    {
+        const int SpeedLimit = 250;
+        const int FuelSpendLimit = 100; // gallons per mile ~ литров на километр
+
+        int speed, fuel;
+
+        public int MaxSpeed
+        {
+            get
+            {
+                return speed;
+            }
+            set
+            {
+                if (value > 0 && value <= SpeedLimit) speed = value;
+                else throw new ArgumentException(string.Format("MaxSpeed = {2} violates range ({0}; {1}]", 0, SpeedLimit, value));
+            }
+        }
+        public int FuelSpend
+        {
+            get
+            {
+                return fuel;
+            }
+            set
+            {
+                if (value > 0 && value <= FuelSpendLimit) fuel = value;
+                else throw new ArgumentException(string.Format("FuelSpend = {2} violates range ({0}; {1}]", 0, FuelSpendLimit, value));
+            }
+        }
+        public AutoParams(int speed, int spend)
+        {
+            MaxSpeed = speed;
+            FuelSpend = spend;
+        }
+    }
+
+    public abstract class LogProcessor
+    {
+        public const int MaxRows = 50;
+        protected string TimeFormat;
+        protected string[] RowFormats;
+        protected static int[] ArgsCounts = { 1, 1, 2, 6, 6, 10 };  
+        public abstract void AddRow(DbOperation action, params object[] args);
+        public LogProcessor()
+        {
+        }
+        public abstract void ClearLog();
+        protected string GetRow(DbOperation action, params object[] args)
+        {
+            if (args.Length != ArgsCounts[(int)action])
+                throw new ArgumentException("Operation args");
+            else
+                return string.Format(RowFormats[(int)action], args);
+        }
+    }
+    public class LocalLogProcessor : LogProcessor
+    {
+        RichTextBox LocalLog;
+        public override void AddRow(DbOperation action, params object[] args)
+        {
+            LocalLog.AppendText(string.Format(TimeFormat, DateTime.Now, GetRow(action, args)));
+        }
+        public override void ClearLog()
+        {
+            LocalLog.Clear();
+        }
+        public LocalLogProcessor(RichTextBox source, OuterLogProcessor OutLog)
+        {
+            LocalLog = source;
+            TimeFormat = "{0:dd-MM-yyyy HH:mm:ss} {1}\n";
+            RowFormats = new string[] { "Добавлен город: {0}",
+                                        "Удален город: {0}",
+                                        "Изменен город: {0} на {1}",
+                                        "Добавлена дорога: {0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)",
+                                        "Удалена дорога: {0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)",
+                                        "Изменены параметры дороги {0} - {1}: ({2} км, {3} руб/л, {4} км/ч, {5} руб) на ({6} км, {7} руб/л, {8} км/ч, {9} руб)"};
+            if (OutLog != null)
+            {
+                LocalLog.Lines = GetLocalRows(OutLog);
+                LocalLog.AppendText("\n");
+            }
+            else
+                LocalLog.Lines = null;
+        }
+        string TransformRow(string row)
+        {
+            try
+            {
+                var tmp = row.Split(',');
+                string timestamp = string.Format("{0}-{1}-{2} {3}:{4}:{5} ", tmp.Take(6).ToArray());
+                switch (tmp[6])
+                {
+                    case "add":
+                        {
+                            if (tmp[7] == "c")
+                                return timestamp + GetRow(DbOperation.DB_ADD_CITY, tmp.Skip(8).ToArray());
+                            else if (tmp[7] == "r")
+                                return timestamp + GetRow(DbOperation.DB_ADD_ROUTE, tmp.Skip(8).ToArray());
+                            else
+                                return null;
+                        }
+                    case "del":
+                        {
+                            if (tmp[7] == "c")
+                                return timestamp + GetRow(DbOperation.DB_REMOVE_CITY, tmp.Skip(8).ToArray());
+                            else if (tmp[7] == "r")
+                                return timestamp + GetRow(DbOperation.DB_REMOVE_ROUTE, tmp.Skip(8).ToArray());
+                            else
+                                return null;
+                        }
+                    case "mod":
+                        {
+                            if (tmp[7] == "c")
+                                return timestamp + GetRow(DbOperation.DB_MOD_CITY, tmp.Skip(8).ToArray());
+                            else if (tmp[7] == "r")
+                                return timestamp + GetRow(DbOperation.DB_MOD_ROUTE, tmp.Skip(8).ToArray());
+                            else
+                                return null;
+                        }
+                    default:
+                        return null;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        public string[] GetLocalRows(OuterLogProcessor OutLog)
+        {
+            string[] result = new string[(OutLog.Loaded ? MaxRows : OutLog.Position + 1)];
+            int q = 0;
+            string z;
+            if (OutLog.LogOverflow)
+            {
+                for (int i = OutLog.Position + 1; i < MaxRows; i++)
+                {
+                    z = TransformRow(OutLog.data[i]);
+                    if (!string.IsNullOrEmpty(z))
+                        result[q++] = z;
+                }
+            }
+            for (int i = 0; i <= OutLog.Position; i++)
+            {
+                z = TransformRow(OutLog.data[i]);
+                if (!string.IsNullOrEmpty(z))
+                    result[q++] = z;
+            }
+            return result.TakeWhile(x => !string.IsNullOrEmpty(x)).ToArray();
+        }
+    }
+    public class OuterLogProcessor : LogProcessor
+    {
+        public bool Loaded { get; }
+        public bool LogOverflow { get; private set; }
+        string LogPath, LogDefaultFileName;
+        public int Position { get; private set; }
+        List<string> newdata;
+        public string[] data { get; private set; }
+        public override void AddRow(DbOperation action, params object[] args)
+        {
+            newdata.Add(string.Format(TimeFormat, DateTime.Now, GetRow(action, args)));
+        }
+        public override void ClearLog()
+        {
+            if (Loaded) File.Delete(LogPath);
+            newdata.Clear();
+        }
+        bool LoadFromFile(string path)
+        {
+            try
+            {
+                var LogReader = new StreamReader(LogPath, Encoding.UTF8);
+                data = new string[MaxRows];
+                int k = 0;
+                while (!LogReader.EndOfStream)
+                {
+                    data[k % MaxRows] = LogReader.ReadLine();
+                    k++;
+                }
+                if (k >= MaxRows) LogOverflow = true;
+                k %= MaxRows;
+                Position = (k == 0 ? MaxRows - 1 : k - 1);
+                LogReader.Close();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public void UploadLog()
+        {
+            if (Loaded)
+            {
+                var LogWriter = new StreamWriter(LogPath, true, Encoding.UTF8);
+                foreach (string row in newdata)
+                    LogWriter.WriteLine(row);
+                LogWriter.Close();
+            }
+        }
+        public OuterLogProcessor(string path)
+        {
+            LogDefaultFileName = "routefinder.log";
+            LogPath = Path.Combine(path, LogDefaultFileName);
+            newdata = new List<string>();
+            Loaded = LoadFromFile(LogPath);
+            TimeFormat = "{0:dd,MM,yyyy,HH,mm,ss},{1}";
+            RowFormats = new string[] { "add,c,{0}",
+                                        "del,c,{0}",
+                                        "mod,c,{0},{1}",
+                                        "add,r,{0},{1},{2},{3},{4},{5}",
+                                        "del,r,{0},{1},{2},{3},{4},{5}",
+                                        "mod,r,{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}"};
+        }
+    }
+}   
 
 

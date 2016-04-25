@@ -12,6 +12,7 @@ namespace main
     {
         DbForm DataBaseForm;
         public RFDatabase Data { get; }
+        public AutoParams YourAuto { get; set; }
         BindingSource StDataSource, EndDataSource;
         List<string> CitiesList;
 
@@ -19,32 +20,30 @@ namespace main
         {
             InitializeComponent();
             Data = new RFDatabase();
+            YourAuto = null;
         }
-
         private void MainForm_Load(object sender, EventArgs e)
         {
             Top = (Screen.PrimaryScreen.Bounds.Height - Height) / 2;
             Left = (Screen.PrimaryScreen.Bounds.Width - Width) / 2;
         }
-
         private void MenuItemDb_Click(object sender, EventArgs e)
         {
             DataBaseForm = new DbForm(this);
-            //if (!DataBaseForm.Visible)
-            //{
-            //    Enabled = false;
-            //    DataBaseForm.Enabled = true;
-            //    DataBaseForm.Location = new Point(Location.X + (Width - DataBaseForm.Width) / 2, Location.Y + (Height - DataBaseForm.Height) / 2);
-            //    DataBaseForm.Show();
-            //}
+            if (!DataBaseForm.Visible)
+            {
+                Enabled = false;
+                DataBaseForm.Enabled = true;
+                DataBaseForm.Location = new Point(Location.X + (Width - DataBaseForm.Width) / 2, Location.Y + (Height - DataBaseForm.Height) / 2);
+                DataBaseForm.Show();
+            }
         }
-
         public void refresh()
         {
+            CitiesList = Data.GetCitiesList();
             StDataSource.ResetBindings(false);
             EndDataSource.ResetBindings(false);
         }
-
         private void MainForm_Shown(object sender, EventArgs e)
         {
             bool FAIL = false;
@@ -88,14 +87,12 @@ namespace main
                 RouteCriteriaSelector.SelectedIndex = 0;
             }
         }
-
         private void SearchButton_Click(object sender, EventArgs e)
         {
             throw new NotImplementedException();
             //if (StartPointBox.SelectedIndex >= 0 && EndPointBox.SelectedIndex >= 0 && RouteCriteriaSelector.SelectedIndex >= 0)
               //  FindRoute(StartPointBox.SelectedItem.ToString(), EndPointBox.SelectedItem.ToString(), RouteCriteriaSelector.SelectedIndex);
         }
-
         private void MenuItemSettings_Click(object sender, EventArgs e)
         {
             Enabled = false;
@@ -108,7 +105,6 @@ namespace main
                 Auto.Show();
             }
         }
-
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();

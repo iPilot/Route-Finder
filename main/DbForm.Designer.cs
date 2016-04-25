@@ -885,7 +885,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "База данных";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.DbForm_FormClosed);
-            this.Load += new System.EventHandler(this.DbForm_Load);
             this.DbTabs.ResumeLayout(false);
             this.DbAddTab.ResumeLayout(false);
             this.DbAddTab.PerformLayout();
