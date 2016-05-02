@@ -8,6 +8,16 @@ namespace main
     {
         MainForm FMain;
 
+        string[] ErrorMessages = { "Параметры установлены",
+                                   "Введите все параметры",
+                                   "Параметры должны быть целыми числами" };
+        enum ErrorCodes
+        {
+            OK,
+            EMPTY_FIELDS,
+            INVALID_VALUES,
+        }
+
         public AutoOptForm(MainForm _main)
         {
             FMain = _main;
@@ -38,17 +48,17 @@ namespace main
                     FMain.YourAuto.MaxSpeed = s;
                     FMain.YourAuto.FuelSpend = f;
                 }
-                ShowResult("Параметры установлены", true);
+                ShowResult(ErrorMessages[(int)ErrorCodes.OK], true);
             }
             catch (FormatException)
             {
                 if (string.IsNullOrEmpty(AutoOptMaxSpeed.Text) || string.IsNullOrEmpty(AutoOptFuelSpend.Text))
                 {
-                    ShowResult("Введите все параметры", false);
+                    ShowResult(ErrorMessages[(int)ErrorCodes.EMPTY_FIELDS], false);
                 }
                 else
                 {
-                    ShowResult("Параметры должны быть целыми числами", false);
+                    ShowResult(ErrorMessages[(int)ErrorCodes.INVALID_VALUES], false);
                 }
             }
             catch (ArgumentException exp)
@@ -65,6 +75,7 @@ namespace main
                 AutoOptErrorLabel.ForeColor = Color.Black;
             else
                 AutoOptErrorLabel.ForeColor = Color.Red;
+            AutoOptErrorShowingTimer.Start();
         }
     }
 }

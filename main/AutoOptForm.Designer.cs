@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.AutoOptMaxSpeed = new System.Windows.Forms.TextBox();
             this.AutoOptSetButton = new System.Windows.Forms.Button();
             this.AutoOptFuelSpend = new System.Windows.Forms.TextBox();
             this.AutoOptMaxSpeedLabel = new System.Windows.Forms.Label();
             this.AutoOptFuelSpendLabel = new System.Windows.Forms.Label();
             this.AutoOptErrorLabel = new System.Windows.Forms.Label();
+            this.AutoOptErrorShowingTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // AutoOptMaxSpeed
@@ -47,7 +49,7 @@
             // AutoOptSetButton
             // 
             this.AutoOptSetButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.AutoOptSetButton.Location = new System.Drawing.Point(91, 73);
+            this.AutoOptSetButton.Location = new System.Drawing.Point(94, 99);
             this.AutoOptSetButton.Name = "AutoOptSetButton";
             this.AutoOptSetButton.Size = new System.Drawing.Size(100, 30);
             this.AutoOptSetButton.TabIndex = 1;
@@ -84,10 +86,14 @@
             // AutoOptErrorLabel
             // 
             this.AutoOptErrorLabel.AutoSize = true;
-            this.AutoOptErrorLabel.Location = new System.Drawing.Point(84, 110);
+            this.AutoOptErrorLabel.Location = new System.Drawing.Point(86, 73);
             this.AutoOptErrorLabel.Name = "AutoOptErrorLabel";
             this.AutoOptErrorLabel.Size = new System.Drawing.Size(0, 13);
             this.AutoOptErrorLabel.TabIndex = 5;
+            // 
+            // AutoOptErrorShowingTimer
+            // 
+            this.AutoOptErrorShowingTimer.Interval = 2500;
             // 
             // AutoOptForm
             // 
@@ -120,5 +126,6 @@
         private System.Windows.Forms.Label AutoOptMaxSpeedLabel;
         private System.Windows.Forms.Label AutoOptFuelSpendLabel;
         private System.Windows.Forms.Label AutoOptErrorLabel;
+        private System.Windows.Forms.Timer AutoOptErrorShowingTimer;
     }
 }

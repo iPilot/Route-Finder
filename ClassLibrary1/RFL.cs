@@ -691,14 +691,13 @@ namespace RouteFinderLibrary
 
         public int MaxSpeed
         {
-            get
-            {
-                return speed;
-            }
+            get { return speed; }
             set
             {
-                if (value > 0 && value <= SpeedLimit) speed = value;
-                else throw new ArgumentException(string.Format("MaxSpeed = {2} violates range ({0}; {1}]", 0, SpeedLimit, value));
+                if (value > 0 && value <= SpeedLimit)
+                    speed = value;
+                else
+                    throw new ArgumentException(string.Format("MaxSpeed = {1} violates range (0; {0}]", SpeedLimit, value));
             }
         }
         public int FuelSpend
@@ -709,8 +708,10 @@ namespace RouteFinderLibrary
             }
             set
             {
-                if (value > 0 && value <= FuelSpendLimit) fuel = value;
-                else throw new ArgumentException(string.Format("FuelSpend = {2} violates range ({0}; {1}]", 0, FuelSpendLimit, value));
+                if (value > 0 && value <= FuelSpendLimit)
+                    fuel = value;
+                else
+                    throw new ArgumentException(string.Format("FuelSpend = {1} violates range (0; {0}]", FuelSpendLimit, value));
             }
         }
         public AutoParams(int speed, int spend)
