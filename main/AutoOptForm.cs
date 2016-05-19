@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace main
@@ -24,9 +25,11 @@ namespace main
             InitializeComponent();
             if (FMain.YourAuto != null)
             {
-                AutoOptMaxSpeed.Text = FMain.YourAuto.MaxSpeed.ToString();
-                AutoOptFuelSpend.Text = FMain.YourAuto.FuelSpend.ToString();
+                AutoOptMaxSpeed.Text = FMain.YourAuto.MaxSpeed.ToString(CultureInfo.InvariantCulture);
+                AutoOptFuelSpend.Text = FMain.YourAuto.FuelSpend.ToString(CultureInfo.InvariantCulture);
             }
+            RouteCount.Value = FMain.RouteCount;
+            RouteDispersionText.Text = (FMain.Disp * 100).ToString(CultureInfo.InvariantCulture);
         }
 
         private void AutoOptForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -40,7 +43,8 @@ namespace main
             try
             {
                 int s = int.Parse(AutoOptMaxSpeed.Text);
-                int f = int.Parse(AutoOptFuelSpend.Text);
+                double f = double.Parse(AutoOptFuelSpend.Text, CultureInfo.InvariantCulture);
+                double dsp = double.Parse(RouteDispersionText.Text.TrimEnd('%'), CultureInfo.InvariantCulture);
                 if (FMain.YourAuto == null)
                     FMain.YourAuto = new RouteFinderLibrary.AutoParams(s, f);
                 else
@@ -48,6 +52,8 @@ namespace main
                     FMain.YourAuto.MaxSpeed = s;
                     FMain.YourAuto.FuelSpend = f;
                 }
+                FMain.RouteCount = (int)RouteCount.Value;
+                FMain.Disp = dsp / 100.0;
                 ShowResult(ErrorMessages[(int)ErrorCodes.OK], true);
             }
             catch (FormatException)
@@ -69,6 +75,7 @@ namespace main
 
         private void ShowResult(string message, bool ok)
         {
+            AutoOptErrorLabel.Show();
             AutoOptErrorLabel.Text = message;
             AutoOptErrorLabel.Location = new Point((Width - 18 - AutoOptErrorLabel.Width) / 2, AutoOptErrorLabel.Location.Y);
             if (ok)
@@ -76,6 +83,31 @@ namespace main
             else
                 AutoOptErrorLabel.ForeColor = Color.Red;
             AutoOptErrorShowingTimer.Start();
+        }
+
+        private void AutoOptErrorShowingTimer_Tick(object sender, EventArgs e)
+        {
+            AutoOptErrorLabel.Hide();
+            AutoOptErrorShowingTimer.Stop();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void AutoOptForm_Load(object sender, EventArgs e)
+        {
+            OptionFormTooltips.SetToolTip(RouteDispertionLabel, "Допустимое отклонение параметра поиска для альтернативных маршрутов (от минимального)");
+            OptionFormTooltips.SetToolTip(AutoOptFuelSpendLabel, "Количество топлива, потребляемое автомобилем для прохода 100 километров");
+            OptionFormTooltips.SetToolTip(AutoOptMaxSpeedLabel, "Максимальная или средняя скорость автомобиля");
+            OptionFormTooltips.SetToolTip(RouteCountLabel, "Количество вариантов пути (от 1 до 7)");
+        }
+
+        private void RouteDispersionText_TextChanged(object sender, EventArgs e)
+        {
+            if (!RouteDispersionText.Text.EndsWith("%"))
+                RouteDispersionText.Text += "%";
         }
     }
 }

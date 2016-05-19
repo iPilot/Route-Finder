@@ -304,24 +304,24 @@ namespace main
             city = RFDatabase.FormatCity(city);
             switch (Db.Data.AddCity(city))
             {
-                case DBActionResult.OK:
+                case RFLActionResult.OK:
                 {
                     DbInterfaceRefresh(DbOperation.DB_ADD_CITY, city);
                     LocalLogger.AddRow(DbOperation.DB_ADD_CITY, city);
                     OuterLogger.AddRow(DbOperation.DB_ADD_CITY, city);
                     break;
                 }
-                case DBActionResult.CITY_ALREADY_EXISTS:
+                case RFLActionResult.CITY_ALREADY_EXISTS:
                 {
                     DBShowError("Ошибка: такой город уже существует");
                     break;
                 }
-                case DBActionResult.EMPTY_CITY:
+                case RFLActionResult.EMPTY_CITY:
                 {
                     DBShowError("Введите название города");
                     break;
                 }
-                case DBActionResult.INVALID_CITY_NAME:
+                case RFLActionResult.INVALID_CITY_NAME:
                 {
                     DBShowError("Ошибка: имя города содержит недопустимые символы");
                     break;
@@ -338,31 +338,36 @@ namespace main
                 int ac = int.Parse(addcost);   
                 switch (Db.Data.AddRoute(source, dest, l, fc, s, ac))
                 {
-                    case DBActionResult.OK:
+                    case RFLActionResult.OK:
                     {
                         DbInterfaceRefresh(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
                         OuterLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
                         LocalLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
                         break;
                     }
-                    case DBActionResult.ROUTE_SOURCE_EQUALS_DEST:
+                    case RFLActionResult.ROUTE_SOURCE_EQUALS_DEST:
                     {
                         DBShowError("Ошибка: начало и конец дороги не могут совпадать");
                         break;
                     }
-                    case DBActionResult.SAME_ROUTE_ALREADY_EXISTS:
+                    case RFLActionResult.SAME_ROUTE_ALREADY_EXISTS:
                     {
                         DBShowError("Ошибка: дорога с такими параметрами уже существует");
                         break;
                     }
-                    case DBActionResult.SOURCE_OR_DEST_CITY_NOT_EXISTS:
+                    case RFLActionResult.SOURCE_OR_DEST_CITY_NOT_EXISTS:
                     {
                         DBShowError("Ошибка: города начала или конца дороги не существует");
                         break;
                     }
-                    case DBActionResult.EMPTY_SOURCE_OR_DEST_CITY:
+                    case RFLActionResult.EMPTY_SOURCE_OR_DEST_CITY:
                     {
                         DBShowError("Выберите начало и конец дороги");
+                        break;
+                    }
+                    case RFLActionResult.INVALID_VALUES:
+                    {
+                        DBShowError("Значения выходят за пределы допустимых");
                         break;
                     }
                 }
@@ -379,19 +384,19 @@ namespace main
         {
             switch (Db.Data.DeleteCity(city))
             {
-                case DBActionResult.OK:
+                case RFLActionResult.OK:
                     {
                         OuterLogger.AddRow(DbOperation.DB_REMOVE_CITY, city);
                         LocalLogger.AddRow(DbOperation.DB_REMOVE_CITY, city);
                         DbInterfaceRefresh(DbOperation.DB_REMOVE_CITY, city);
                         break;
                     }
-                case DBActionResult.CITY_NOT_EXISTS:
+                case RFLActionResult.CITY_NOT_EXISTS:
                     {
                         DBShowError("Ошибка: такого города не существует");
                         break;
                     }
-                case DBActionResult.EMPTY_CITY:
+                case RFLActionResult.EMPTY_CITY:
                     {
                         DBShowError("Выберите город");
                         break;
@@ -402,14 +407,14 @@ namespace main
         {
             switch (Db.Data.DeleteRoute(route, DbDeleteRouteAll.Checked))
             {
-                case DBActionResult.OK:
+                case RFLActionResult.OK:
                     {
                         LocalLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
                         OuterLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
                         DbInterfaceRefresh(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
                         break;
                     }
-                case DBActionResult.ROUTE_NOT_EXISTS:
+                case RFLActionResult.ROUTE_NOT_EXISTS:
                     {
                         DBShowError("Ошибка: такой дороги не существует");
                         break;
@@ -421,29 +426,29 @@ namespace main
             newcity = RFDatabase.FormatCity(newcity);
             switch (Db.Data.ModCity(oldcity, newcity))
             {
-                case DBActionResult.OK:
+                case RFLActionResult.OK:
                     {
                         LocalLogger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         OuterLogger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         DbInterfaceRefresh(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         break;
                     }
-                case DBActionResult.INVALID_NEW_CITYNAME:
+                case RFLActionResult.INVALID_NEW_CITYNAME:
                     {
                         DBShowError("Ошибка: недопустимое новое имя города");
                         break;
                     }
-                case DBActionResult.CITYNAME_NOT_CHANGED:
+                case RFLActionResult.CITYNAME_NOT_CHANGED:
                     {
                         DBShowError("Предупреждение: имя города не изменено");
                         break;
                     }
-                case DBActionResult.CITY_NOT_EXISTS:
+                case RFLActionResult.CITY_NOT_EXISTS:
                     {
                         DBShowError("Ошибка: такого города не существует");
                         break;
                     }
-                case DBActionResult.INVALID_VALUES:
+                case RFLActionResult.INVALID_VALUES:
                     {
                         DBShowError("Неизвестная ошибка");
                         break;
@@ -460,29 +465,29 @@ namespace main
                 int ac = int.Parse(nacost);
                 switch (Db.Data.ModRoute(route, l, fc, s, ac))
                 {
-                    case DBActionResult.OK:
+                    case RFLActionResult.OK:
                         {
                             LocalLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
                             OuterLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
                             DbInterfaceRefresh(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
                             break;
                         }
-                    case DBActionResult.ROUTE_NOT_CHANGED:
+                    case RFLActionResult.ROUTE_NOT_CHANGED:
                         {
                             DBShowError("Параметры дороги не изменены");
                             break;
                         }
-                    case DBActionResult.SAME_ROUTE_ALREADY_EXISTS:
+                    case RFLActionResult.SAME_ROUTE_ALREADY_EXISTS:
                         {
                             DBShowError("Ошибка: другая дорога уже имеет такие параметры");
                             break;
                         }
-                    case DBActionResult.INVALID_VALUES:
+                    case RFLActionResult.INVALID_VALUES:
                         {
                             DBShowError("Ошибка: недопустимые значения параметров");
                             break;
                         }
-                    case DBActionResult.ROUTE_NOT_EXISTS:
+                    case RFLActionResult.ROUTE_NOT_EXISTS:
                         {
                             DBShowError("Ошибка: такой дороги не существует");
                             break;

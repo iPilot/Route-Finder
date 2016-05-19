@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.SearchButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.MenuItemDb = new System.Windows.Forms.ToolStripMenuItem();
@@ -37,18 +38,19 @@
             this.EndPointBox = new System.Windows.Forms.ComboBox();
             this.StartPointLabel = new System.Windows.Forms.Label();
             this.EndPointLabel = new System.Windows.Forms.Label();
-            this.RouteSearchLog = new System.Windows.Forms.RichTextBox();
             this.RouteCriteriaSelector = new System.Windows.Forms.ComboBox();
             this.RouteCriteriaLabel = new System.Windows.Forms.Label();
+            this.MainFormErrorTimer = new System.Windows.Forms.Timer(this.components);
+            this.MainFormErrorLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchButton
             // 
             this.SearchButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.SearchButton.Location = new System.Drawing.Point(280, 98);
+            this.SearchButton.Location = new System.Drawing.Point(91, 200);
             this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(90, 43);
+            this.SearchButton.Size = new System.Drawing.Size(100, 43);
             this.SearchButton.TabIndex = 0;
             this.SearchButton.Text = "Поиск";
             this.SearchButton.UseVisualStyleBackColor = true;
@@ -62,7 +64,7 @@
             this.ExitToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(429, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(284, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -92,9 +94,9 @@
             this.StartPointBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.StartPointBox.FormattingEnabled = true;
             this.StartPointBox.IntegralHeight = false;
-            this.StartPointBox.Location = new System.Drawing.Point(10, 46);
+            this.StartPointBox.Location = new System.Drawing.Point(16, 46);
             this.StartPointBox.Name = "StartPointBox";
-            this.StartPointBox.Size = new System.Drawing.Size(160, 28);
+            this.StartPointBox.Size = new System.Drawing.Size(250, 28);
             this.StartPointBox.TabIndex = 3;
             // 
             // EndPointBox
@@ -102,15 +104,15 @@
             this.EndPointBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.EndPointBox.FormattingEnabled = true;
             this.EndPointBox.IntegralHeight = false;
-            this.EndPointBox.Location = new System.Drawing.Point(210, 46);
+            this.EndPointBox.Location = new System.Drawing.Point(16, 96);
             this.EndPointBox.Name = "EndPointBox";
-            this.EndPointBox.Size = new System.Drawing.Size(160, 28);
+            this.EndPointBox.Size = new System.Drawing.Size(250, 28);
             this.EndPointBox.TabIndex = 4;
             // 
             // StartPointLabel
             // 
             this.StartPointLabel.AutoSize = true;
-            this.StartPointLabel.Location = new System.Drawing.Point(10, 30);
+            this.StartPointLabel.Location = new System.Drawing.Point(16, 30);
             this.StartPointLabel.Name = "StartPointLabel";
             this.StartPointLabel.Size = new System.Drawing.Size(43, 13);
             this.StartPointLabel.TabIndex = 5;
@@ -119,19 +121,11 @@
             // EndPointLabel
             // 
             this.EndPointLabel.AutoSize = true;
-            this.EndPointLabel.Location = new System.Drawing.Point(210, 30);
+            this.EndPointLabel.Location = new System.Drawing.Point(16, 80);
             this.EndPointLabel.Name = "EndPointLabel";
             this.EndPointLabel.Size = new System.Drawing.Size(31, 13);
             this.EndPointLabel.TabIndex = 6;
             this.EndPointLabel.Text = "Куда";
-            // 
-            // RouteSearchLog
-            // 
-            this.RouteSearchLog.Location = new System.Drawing.Point(10, 166);
-            this.RouteSearchLog.Name = "RouteSearchLog";
-            this.RouteSearchLog.Size = new System.Drawing.Size(360, 129);
-            this.RouteSearchLog.TabIndex = 7;
-            this.RouteSearchLog.Text = "";
             // 
             // RouteCriteriaSelector
             // 
@@ -143,29 +137,43 @@
             "Расстояние",
             "Время",
             "Стоимость"});
-            this.RouteCriteriaSelector.Location = new System.Drawing.Point(10, 105);
+            this.RouteCriteriaSelector.Location = new System.Drawing.Point(16, 151);
             this.RouteCriteriaSelector.Name = "RouteCriteriaSelector";
-            this.RouteCriteriaSelector.Size = new System.Drawing.Size(160, 28);
+            this.RouteCriteriaSelector.Size = new System.Drawing.Size(250, 28);
             this.RouteCriteriaSelector.TabIndex = 8;
             // 
             // RouteCriteriaLabel
             // 
             this.RouteCriteriaLabel.AutoSize = true;
-            this.RouteCriteriaLabel.Location = new System.Drawing.Point(10, 89);
+            this.RouteCriteriaLabel.Location = new System.Drawing.Point(16, 135);
             this.RouteCriteriaLabel.Name = "RouteCriteriaLabel";
             this.RouteCriteriaLabel.Size = new System.Drawing.Size(97, 13);
             this.RouteCriteriaLabel.TabIndex = 9;
             this.RouteCriteriaLabel.Text = "Критерий поиска:";
+            // 
+            // MainFormErrorTimer
+            // 
+            this.MainFormErrorTimer.Interval = 2500;
+            this.MainFormErrorTimer.Tick += new System.EventHandler(this.MainFormErrorTimer_Tick);
+            // 
+            // MainFormErrorLabel
+            // 
+            this.MainFormErrorLabel.AutoSize = true;
+            this.MainFormErrorLabel.ForeColor = System.Drawing.Color.Red;
+            this.MainFormErrorLabel.Location = new System.Drawing.Point(101, 255);
+            this.MainFormErrorLabel.Name = "MainFormErrorLabel";
+            this.MainFormErrorLabel.Size = new System.Drawing.Size(0, 13);
+            this.MainFormErrorLabel.TabIndex = 10;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(429, 307);
+            this.ClientSize = new System.Drawing.Size(284, 281);
+            this.Controls.Add(this.MainFormErrorLabel);
             this.Controls.Add(this.RouteCriteriaLabel);
             this.Controls.Add(this.RouteCriteriaSelector);
-            this.Controls.Add(this.RouteSearchLog);
             this.Controls.Add(this.EndPointLabel);
             this.Controls.Add(this.StartPointLabel);
             this.Controls.Add(this.EndPointBox);
@@ -177,6 +185,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Поиск маршрутов";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.menuStrip1.ResumeLayout(false);
@@ -196,10 +205,11 @@
         private System.Windows.Forms.ComboBox EndPointBox;
         private System.Windows.Forms.Label StartPointLabel;
         private System.Windows.Forms.Label EndPointLabel;
-        private System.Windows.Forms.RichTextBox RouteSearchLog;
         private System.Windows.Forms.ComboBox RouteCriteriaSelector;
         private System.Windows.Forms.Label RouteCriteriaLabel;
         private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
+        private System.Windows.Forms.Timer MainFormErrorTimer;
+        private System.Windows.Forms.Label MainFormErrorLabel;
     }
 }
 
