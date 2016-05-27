@@ -19,17 +19,11 @@ namespace main
         List<CRoute> LocalRoutes;
         BindingSource[] bindings;
         BindingSource DGDataSource;
+        Random AddRandom;
+        bool AddConsole, CityChanged;
 
-        public DbForm(MainForm db)
+        private void SetBindings()
         {
-            InitializeComponent();
-            Db = db;
-            Db.Enabled = false;
-            Db.Visible = false;
-            OuterLogger = new OuterLogProcessor(Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.LastIndexOf('\\'))));
-            LocalLogger = new LocalLogProcessor(DbLogText, OuterLogger);
-            LocalCities = Db.Data.GetCitiesList();
-            LocalRoutes = Db.Data.GetRoutesList();
             bindings = new BindingSource[7];
             for (int i = 0; i < 5; i++)
                 bindings[i] = new BindingSource(LocalCities, "");
@@ -44,22 +38,50 @@ namespace main
             DbModRouteSelector.DataSource = bindings[6];
             DGDataSource = new BindingSource(LocalRoutes, "");
             DbRoutesDataGrid.DataSource = DGDataSource;
+            if (LocalRoutes.Count > 12)
+            {
+                DbRoutesDataGrid.Columns[1].Width = 115;
+                DbRoutesDataGrid.Columns[0].Width = 115;
+            }
+            else
+            {
+                DbRoutesDataGrid.Columns[1].Width = 124;
+                DbRoutesDataGrid.Columns[0].Width = 124;
+            }
         }
         
+        public DbForm(MainForm db)
+        {
+            InitializeComponent();
+
+            Db = db;
+            Db.Enabled = false;
+            Db.Visible = false;
+            AddConsole = false;
+            CityChanged = false;
+
+            OuterLogger = new OuterLogProcessor(Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.LastIndexOf('\\'))));
+            LocalLogger = new LocalLogProcessor(DbLogText, OuterLogger);
+            AddRandom = new Random(DateTime.Now.Second * DateTime.Now.Millisecond);
+
+            LocalCities = Db.Data.GetCitiesList();
+            LocalRoutes = Db.Data.GetRoutesList();
+            SetBindings();
+        }
         private void DbRefresh()
         {
             for (int i = 0; i < 7; i++)
                 bindings[i].ResetBindings(false);
             DGDataSource.ResetBindings(false);
-            if (LocalCities.Count > 12)
+            if (LocalRoutes.Count > 12)
             {
-                DbRoutesColumn1.Width -= 9;
-                DbRoutesColumn2.Width -= 8;
+                DbRoutesDataGrid.Columns[1].Width = 115;
+                DbRoutesDataGrid.Columns[0].Width = 115;
             }
             else
             {
-                DbRoutesColumn1.Width += 9;
-                DbRoutesColumn2.Width += 8;
+                DbRoutesDataGrid.Columns[1].Width = 124;
+                DbRoutesDataGrid.Columns[0].Width = 124;
             }
         }
 
@@ -69,22 +91,33 @@ namespace main
             {
                 DbAddNewCityLabel.Hide();
                 DbAddNewCityText.Hide();
-                DbAddRouteOptions.Show();
+                if (!AddConsole)
+                    DbAddRouteOptions.Show();
+                else
+                {
+                    DbAddRouteConsole.Visible = !DbAddRouteConsole.Visible;
+                    DbAddRouteRandom.Visible = !DbAddRouteRandom.Visible;
+                    DbAddRandomSetSeed.Visible = !DbAddRandomSetSeed.Visible;
+                    DbAddRouteIncludingName.Visible = !DbAddRouteIncludingName.Visible;
+                }
             }
             else
             {
                 DbAddNewCityLabel.Show();
                 DbAddNewCityText.Show();
-                DbAddRouteOptions.Hide();
+                if (!AddConsole)
+                    DbAddRouteOptions.Hide();
+                else
+                {
+                    DbAddRouteConsole.Visible = !DbAddRouteConsole.Visible;
+                    DbAddRouteRandom.Visible = !DbAddRouteRandom.Visible;
+                    DbAddRandomSetSeed.Visible = !DbAddRandomSetSeed.Visible;
+                    DbAddRouteIncludingName.Visible = !DbAddRouteIncludingName.Visible;
+                }
             }
         }
         private void DbForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            OuterLogger.UploadLog();
-            Db.Visible = true;
-            Db.Enabled = true;
-            Db.refresh();
-            Db.Focus();
+        {   
         }
 
         private void DbDeleteRoute_CheckedChanged(object sender, EventArgs e)
@@ -95,7 +128,6 @@ namespace main
                 DbDeleteRouteSelector.Visible = true;
                 DbDeleteCitySelector.Visible = false;
                 DbDeleteWarningLabel.Visible = false;
-                DbDeleteRouteAll.Visible = true;
             }
             else
             {
@@ -111,22 +143,39 @@ namespace main
             if (DbAddCity.Checked)
                 __AddCity(DbAddNewCityText.Text);
             if (DbAddRoute.Checked)
-                __AddRoute(DbAddRouteSource.SelectedItem.ToString(), 
-                             DbAddRouteDest.SelectedItem.ToString(), 
-                             DbAddRouteLength.Text, 
-                             DbAddRouteFuelCost.Text, 
-                             DbAddRouteSpeedLimit.Text, 
-                             DbAddRouteAddCosts.Text);
+            {
+                if (LocalCities.Count > 1)
+                {
+                    if (DbAddRouteConsole.Visible)
+                        __AddRouteConsole(DbAddRouteConsole.Text);
+                    else
+                        __AddRoute(DbAddRouteSource.SelectedItem.ToString(),
+                                 DbAddRouteDest.SelectedItem.ToString(),
+                                 DbAddRouteLength.Text,
+                                 DbAddRouteFuelCost.Text,
+                                 DbAddRouteSpeedLimit.Text,
+                                 DbAddRouteAddCosts.Text,
+                                 DbAddRouteName.Text);
+                }
+                else
+                    DBShowError("Для этого необходимо добавить хотя бы два города");
+            }
         }
         private void DbDeleteButton_Click(object sender, EventArgs e)
         {
             if (DbDeleteCity.Checked)
             {
-                __DelCity(DbDeleteCitySelector.SelectedItem.ToString());
+                if (LocalCities.Count > 0)
+                    __DelCity(DbDeleteCitySelector.SelectedItem.ToString());
+                else
+                    DBShowError("Для этого необходимо добавить хотя бы один город");
             }
             if (DbDeleteRoute.Checked)
             {
-                __DelRoute((CRoute)DbDeleteRouteSelector.SelectedItem);
+                if (LocalRoutes.Count > 0)
+                    __DelRoute(DbDeleteRouteSelector.SelectedItem as CRoute);
+                else
+                    DBShowError("Для этого необходимо добавить хотя бы одну дорогу");
             }
         }
         private void DbShowResultTimer_Tick(object sender, EventArgs e)
@@ -180,6 +229,7 @@ namespace main
                 DbModNewRouteSpeedLimit.Text = tmp.Options.SpeedLimit.ToString();
                 DbModNewRouteFuelCost.Text = tmp.Options.FuelCost.ToString();
                 DbModNewRouteAddCosts.Text = tmp.Options.AddCosts.ToString();
+                DbModRouteNewRouteName.Text = tmp.Options.Name;
             }
             else
             {
@@ -187,6 +237,7 @@ namespace main
                 DbModNewRouteSpeedLimit.Text = "";
                 DbModNewRouteFuelCost.Text = "";
                 DbModNewRouteAddCosts.Text = "";
+                DbModRouteNewRouteName.Text = "";
             }
         }
         private void DbModCitySelector_SelectedIndexChanged(object sender, EventArgs e)
@@ -200,15 +251,22 @@ namespace main
         {
             if (DbModCity.Checked)
             {
-                __ModCity(DbModCitySelector.SelectedItem.ToString(), DbModNewCityName.Text);
+                if (LocalCities.Count > 0)
+                    __ModCity(DbModCitySelector.SelectedItem.ToString(), DbModNewCityName.Text);
+                else
+                    DBShowError("Для этого необходимо добавить хотя бы один город");
             }
             else
             {
-                __ModRoute((CRoute)DbModRouteSelector.SelectedItem, 
-                                   DbModNewRouteLength.Text,
-                                   DbModNewRouteFuelCost.Text,
-                                   DbModNewRouteSpeedLimit.Text,
-                                   DbModNewRouteAddCosts.Text);
+                if (LocalRoutes.Count > 0)
+                    __ModRoute(DbModRouteSelector.SelectedItem as CRoute,
+                                       DbModNewRouteLength.Text,
+                                       DbModNewRouteFuelCost.Text,
+                                       DbModNewRouteSpeedLimit.Text,
+                                       DbModNewRouteAddCosts.Text,
+                                       DbModRouteNewRouteName.Text);
+                else
+                    DBShowError("Для этого необходимо добавить хотя бы одну дорогу");
             }
         }
 
@@ -220,7 +278,8 @@ namespace main
                 {
                     case 0:
                         {
-                            if (DbAddNewCityText.Focused || DbAddRouteSpeedLimit.Focused || DbAddRouteLength.Focused || DbAddRouteFuelCost.Focused || DbAddRouteAddCosts.Focused) DbAddButton_Click(sender, e);
+                            if (DbAddNewCityText.Focused || DbAddRouteSpeedLimit.Focused || DbAddRouteLength.Focused || DbAddRouteFuelCost.Focused || DbAddRouteAddCosts.Focused || DbAddRouteName.Focused) DbAddButton_Click(sender, e);
+                            if (DbAddRouteConsole.Visible && !string.IsNullOrEmpty(DbAddRouteConsole.Text)) DbAddButton_Click(sender, e);
                             break;
                         }
                     case 1:
@@ -230,10 +289,19 @@ namespace main
                         }
                     case 2:
                         {
-                            if (DbModNewCityName.Focused || DbModNewRouteFuelCost.Focused || DbModNewRouteLength.Focused || DbModNewRouteSpeedLimit.Focused || DbModNewRouteAddCosts.Focused) DbModButton_Click(sender, e);
+                            if (DbModNewCityName.Focused || DbModNewRouteFuelCost.Focused || DbModNewRouteLength.Focused || DbModNewRouteSpeedLimit.Focused || DbModNewRouteAddCosts.Focused || DbModRouteNewRouteName.Focused) DbModButton_Click(sender, e);
                             break;
                         }
                 }
+            }
+            if ((e.KeyChar == 'E' || e.KeyChar == 'У') && DbTabs.SelectedIndex == 0 && DbAddRoute.Checked)
+            {
+                DbAddRouteOptions.Visible = !DbAddRouteOptions.Visible;
+                DbAddRouteConsole.Visible = !DbAddRouteConsole.Visible;
+                DbAddRouteRandom.Visible = !DbAddRouteRandom.Visible;
+                DbAddRandomSetSeed.Visible = !DbAddRandomSetSeed.Visible;
+                AddConsole = !AddConsole;
+                DbAddRouteIncludingName.Visible = !DbAddRouteIncludingName.Visible;
             }
         }
         private void DbTabs_KeyDown(object sender, KeyEventArgs e)
@@ -257,12 +325,14 @@ namespace main
                     }
                 case DbOperation.DB_ADD_ROUTE:
                     {
-                        DbActionSuccessLabel.Text = string.Format("Добавлено: {0} - {1} ({2}, {3}, {4}, {5})", args);
-                        LocalRoutes.Add(new CRoute(args[0].ToString(), args[1].ToString(), int.Parse(args[2].ToString()), int.Parse(args[3].ToString()), int.Parse(args[4].ToString()), int.Parse(args[5].ToString())));
+                        DbActionSuccessLabel.Text = string.Format("Добавлено: {6} {0} - {1} ({2}, {3}, {4}, {5})", args);
+                        LocalRoutes.Add(new CRoute(args[0].ToString(), args[1].ToString(), args[6].ToString(), int.Parse(args[2].ToString()), int.Parse(args[3].ToString()), int.Parse(args[4].ToString()), int.Parse(args[5].ToString())));
                         DbAddRouteLength.Clear();
                         DbAddRouteSpeedLimit.Clear();
                         DbAddRouteAddCosts.Clear();
                         DbAddRouteFuelCost.Clear();
+                        DbAddRouteName.Clear();
+                        DbAddRouteConsole.Clear();
                         break;
                     }
                 case DbOperation.DB_REMOVE_CITY:
@@ -274,7 +344,7 @@ namespace main
                     }
                 case DbOperation.DB_REMOVE_ROUTE:
                     {
-                        DbActionSuccessLabel.Text = string.Format("Удалено: {0} - {1} ({2}, {3}, {4}, {5})", args);
+                        DbActionSuccessLabel.Text = string.Format("Удалено: {6} {0} - {1} ({2}, {3}, {4}, {5})", args);
                         LocalRoutes.RemoveAt(DbDeleteRouteSelector.SelectedIndex);
                         break;
                     }
@@ -287,12 +357,9 @@ namespace main
                     }
                 case DbOperation.DB_MOD_ROUTE:
                     {
-                        DbActionSuccessLabel.Text = string.Format("Изменен {0} - {1}: ({2}, {3}, {4}, {5}) на ({6}, {7}, {8}, {9})", args);
-                        LocalRoutes[DbModRouteSelector.SelectedIndex] = new CRoute(args[0].ToString(), args[1].ToString(), int.Parse(args[6].ToString()), int.Parse(args[7].ToString()), int.Parse(args[8].ToString()), int.Parse(args[9].ToString()));
-                        DbModNewRouteAddCosts.Clear();
-                        DbModNewRouteFuelCost.Clear();
-                        DbModNewRouteLength.Clear();
-                        DbModNewRouteSpeedLimit.Clear();
+                        DbActionSuccessLabel.Text = string.Format("Изменено {10} {0} - {1}: ({2}, {3}, {4}, {5}) на ({11}, {6}, {7}, {8}, {9})", args);
+                        LocalRoutes[DbModRouteSelector.SelectedIndex] = new CRoute(args[0].ToString(), args[1].ToString(), args[11].ToString(), int.Parse(args[6].ToString()), int.Parse(args[7].ToString()), int.Parse(args[8].ToString()), int.Parse(args[9].ToString()));
+                        DbModCitySelector.SelectedIndex = DbModCitySelector.SelectedIndex;
                         break;
                     }
             }
@@ -309,6 +376,7 @@ namespace main
                     DbInterfaceRefresh(DbOperation.DB_ADD_CITY, city);
                     LocalLogger.AddRow(DbOperation.DB_ADD_CITY, city);
                     OuterLogger.AddRow(DbOperation.DB_ADD_CITY, city);
+                    CityChanged = true;
                     break;
                 }
                 case RFLActionResult.CITY_ALREADY_EXISTS:
@@ -328,21 +396,22 @@ namespace main
                 }
             }
         }
-        private void __AddRoute(string source, string dest, string len, string fcost, string speed, string addcost)
+        private void __AddRoute(string source, string dest, string len, string fcost, string speed, string addcost, string name = "")
         {
             try
             {
                 int l = int.Parse(len);
                 int fc = int.Parse(fcost);
                 int s = int.Parse(speed);
-                int ac = int.Parse(addcost);   
-                switch (Db.Data.AddRoute(source, dest, l, fc, s, ac))
+                int ac = int.Parse(addcost);
+                if (!string.IsNullOrEmpty(name) && !string.IsNullOrWhiteSpace(name)) CheckRouteName(name);
+                switch (Db.Data.AddRoute(source, dest, l, fc, s, ac, name))
                 {
                     case RFLActionResult.OK:
                     {
-                        DbInterfaceRefresh(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
-                        OuterLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
-                        LocalLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost);
+                        DbInterfaceRefresh(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost, name);
+                        OuterLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost, name);
+                        LocalLogger.AddRow(DbOperation.DB_ADD_ROUTE, source, dest, len, fcost, speed, addcost, name);
                         break;
                     }
                     case RFLActionResult.ROUTE_SOURCE_EQUALS_DEST:
@@ -370,6 +439,11 @@ namespace main
                         DBShowError("Значения выходят за пределы допустимых");
                         break;
                     }
+                    case RFLActionResult.ROUTE_NAME_ALREADE_USED:
+                    {
+                        DBShowError("Такое название уже закреплено за другой дорогой");
+                        break;
+                    }
                 }
             }
             catch (FormatException)
@@ -378,6 +452,13 @@ namespace main
                     DBShowError("Введите все параметры дороги");
                 else
                     DBShowError("Ошибка: параметры должны быть целыми числами");
+            }
+            catch (ArgumentException exp)
+            {
+                if (exp.ParamName == "RouteName")
+                    DBShowError(exp.Message);
+                else
+                    DBShowError("Неизвестная ошибка");
             }
         }
         private void __DelCity(string city)
@@ -389,6 +470,7 @@ namespace main
                         OuterLogger.AddRow(DbOperation.DB_REMOVE_CITY, city);
                         LocalLogger.AddRow(DbOperation.DB_REMOVE_CITY, city);
                         DbInterfaceRefresh(DbOperation.DB_REMOVE_CITY, city);
+                        CityChanged = true;
                         break;
                     }
                 case RFLActionResult.CITY_NOT_EXISTS:
@@ -409,9 +491,9 @@ namespace main
             {
                 case RFLActionResult.OK:
                     {
-                        LocalLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
-                        OuterLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
-                        DbInterfaceRefresh(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts);
+                        LocalLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, route.Options.Name);
+                        OuterLogger.AddRow(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, route.Options.Name);
+                        DbInterfaceRefresh(DbOperation.DB_REMOVE_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, route.Options.Name);
                         break;
                     }
                 case RFLActionResult.ROUTE_NOT_EXISTS:
@@ -431,6 +513,7 @@ namespace main
                         LocalLogger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         OuterLogger.AddRow(DbOperation.DB_MOD_CITY, oldcity, newcity);
                         DbInterfaceRefresh(DbOperation.DB_MOD_CITY, oldcity, newcity);
+                        CityChanged = true;
                         break;
                     }
                 case RFLActionResult.INVALID_NEW_CITYNAME:
@@ -455,7 +538,7 @@ namespace main
                     }
             }
         }
-        private void __ModRoute(CRoute route, string nlen, string nfcost, string nspeed, string nacost)
+        private void __ModRoute(CRoute route, string nlen, string nfcost, string nspeed, string nacost, string nname = "")
         {
             try
             {
@@ -463,13 +546,14 @@ namespace main
                 int fc = int.Parse(nfcost);
                 int s = int.Parse(nspeed);
                 int ac = int.Parse(nacost);
-                switch (Db.Data.ModRoute(route, l, fc, s, ac))
+                if (!string.IsNullOrEmpty(nname) && !string.IsNullOrWhiteSpace(nname)) CheckRouteName(nname);
+                switch (Db.Data.ModRoute(route, l, fc, s, ac, nname))
                 {
                     case RFLActionResult.OK:
                         {
-                            LocalLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
-                            OuterLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
-                            DbInterfaceRefresh(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac);
+                            LocalLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac, route.Options.Name, nname);
+                            OuterLogger.AddRow(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac, route.Options.Name, nname);
+                            DbInterfaceRefresh(DbOperation.DB_MOD_ROUTE, route.FirstCity, route.SecondCity, route.Options.Length, route.Options.FuelCost, route.Options.SpeedLimit, route.Options.AddCosts, l, fc, s, ac, route.Options.Name, nname);
                             break;
                         }
                     case RFLActionResult.ROUTE_NOT_CHANGED:
@@ -501,6 +585,74 @@ namespace main
                 else
                     DBShowError("Ошибка: параметры должны быть целыми числами");
             }
+        }
+        private void __AddRouteConsole(string consoletext)
+        {
+            var tmp = DbAddRouteConsole.Text.Split(',');
+            if (tmp.Length < 6 || tmp.Length > 7)
+                DBShowError("Неверное количество параметров");
+            else
+                __AddRoute(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5], (tmp.Length == 7 ? tmp[6] : ""));
+        }
+
+        private void CheckRouteName(string name)
+        {
+            for (int i = 0; i < name.Length; i++)
+                if (!char.IsLetterOrDigit(name[i]))
+                    throw new ArgumentException("Некорректное наименование трассы", "RouteName");
+        }
+
+        private void DbAddRouteSource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(DbAddRouteAddCosts.Text))
+                DbAddRouteAddCosts.Text = "0";
+            if (string.IsNullOrEmpty(DbAddRouteSpeedLimit.Text))
+                DbAddRouteSpeedLimit.Text = "90";
+        }
+        private void DbAddRouteDest_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(DbAddRouteAddCosts.Text))
+                DbAddRouteAddCosts.Text = "0";
+            if (string.IsNullOrEmpty(DbAddRouteSpeedLimit.Text))
+                DbAddRouteSpeedLimit.Text = "90";
+        }
+        private void DbAddRouteRandom_Click(object sender, EventArgs e)
+        {
+            if (LocalCities.Count > 1)
+            {
+                int c1 = 0, c2 = 0;
+                while (c1 == c2)
+                {
+                    c1 = AddRandom.Next(0, LocalCities.Count);
+                    c2 = AddRandom.Next(0, LocalCities.Count);
+                }
+                int l = AddRandom.Next(50, RouteParams.MaxLength);
+                int fc = AddRandom.Next(1, RouteParams.MaxFuelCost);
+                int s = AddRandom.Next(40, RouteParams.MaxSpeedLimit);
+                int ac = AddRandom.Next(0, RouteParams.MaxAddCosts);
+                DbAddRouteConsole.Text = string.Format("{0},{1},{2},{3},{4},{5}", LocalCities[c1], LocalCities[c2], l, fc, s, ac);
+                if (DbAddRouteIncludingName.Checked)
+                {
+                    char c = (char)AddRandom.Next('A', 'Z');
+                    char cc = (char)AddRandom.Next('A', 'Z');
+                    DbAddRouteConsole.Text += string.Format(",{0}{1}{2}", c, (AddRandom.Next(0, 2) == 1 ? cc.ToString() : ""), AddRandom.Next(1, 1000));
+                }
+            }
+            else
+                DBShowError("Для этого необходимо добавить хотя бы два города");
+        }
+        private void DbAddRandomSetSeed_Click(object sender, EventArgs e)
+        {
+            AddRandom = new Random(DateTime.Now.Second * DateTime.Now.Millisecond);
+        }
+
+        private void DbForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            OuterLogger.UploadLog();
+            Db.Visible = true;
+            Db.Enabled = true;
+            Db.refresh(CityChanged);
+            Db.Focus();
         }
     }
 }

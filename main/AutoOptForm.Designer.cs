@@ -39,7 +39,10 @@
             this.OptionExitButton = new System.Windows.Forms.Button();
             this.RouteCount = new System.Windows.Forms.NumericUpDown();
             this.AutoParamsGroup = new System.Windows.Forms.GroupBox();
+            this.lpkmLabel = new System.Windows.Forms.Label();
+            this.kphLabel = new System.Windows.Forms.Label();
             this.SearchParamsGroup = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.RouteDispersionText = new System.Windows.Forms.TextBox();
             this.RouteDispertionLabel = new System.Windows.Forms.Label();
             this.RouteCountLabel = new System.Windows.Forms.Label();
@@ -52,7 +55,7 @@
             // AutoOptMaxSpeed
             // 
             this.AutoOptMaxSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.AutoOptMaxSpeed.Location = new System.Drawing.Point(151, 62);
+            this.AutoOptMaxSpeed.Location = new System.Drawing.Point(127, 62);
             this.AutoOptMaxSpeed.Name = "AutoOptMaxSpeed";
             this.AutoOptMaxSpeed.Size = new System.Drawing.Size(68, 24);
             this.AutoOptMaxSpeed.TabIndex = 1;
@@ -61,7 +64,7 @@
             // AutoOptSetButton
             // 
             this.AutoOptSetButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.AutoOptSetButton.Location = new System.Drawing.Point(22, 260);
+            this.AutoOptSetButton.Location = new System.Drawing.Point(16, 259);
             this.AutoOptSetButton.Name = "AutoOptSetButton";
             this.AutoOptSetButton.Size = new System.Drawing.Size(100, 30);
             this.AutoOptSetButton.TabIndex = 4;
@@ -72,7 +75,7 @@
             // AutoOptFuelSpend
             // 
             this.AutoOptFuelSpend.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.AutoOptFuelSpend.Location = new System.Drawing.Point(151, 20);
+            this.AutoOptFuelSpend.Location = new System.Drawing.Point(127, 19);
             this.AutoOptFuelSpend.Name = "AutoOptFuelSpend";
             this.AutoOptFuelSpend.Size = new System.Drawing.Size(68, 24);
             this.AutoOptFuelSpend.TabIndex = 0;
@@ -81,7 +84,7 @@
             // AutoOptMaxSpeedLabel
             // 
             this.AutoOptMaxSpeedLabel.AutoSize = true;
-            this.AutoOptMaxSpeedLabel.Location = new System.Drawing.Point(6, 67);
+            this.AutoOptMaxSpeedLabel.Location = new System.Drawing.Point(10, 67);
             this.AutoOptMaxSpeedLabel.Name = "AutoOptMaxSpeedLabel";
             this.AutoOptMaxSpeedLabel.Size = new System.Drawing.Size(58, 13);
             this.AutoOptMaxSpeedLabel.TabIndex = 3;
@@ -90,7 +93,7 @@
             // AutoOptFuelSpendLabel
             // 
             this.AutoOptFuelSpendLabel.AutoSize = true;
-            this.AutoOptFuelSpendLabel.Location = new System.Drawing.Point(6, 26);
+            this.AutoOptFuelSpendLabel.Location = new System.Drawing.Point(10, 25);
             this.AutoOptFuelSpendLabel.Name = "AutoOptFuelSpendLabel";
             this.AutoOptFuelSpendLabel.Size = new System.Drawing.Size(90, 13);
             this.AutoOptFuelSpendLabel.TabIndex = 4;
@@ -112,7 +115,7 @@
             // OptionExitButton
             // 
             this.OptionExitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.OptionExitButton.Location = new System.Drawing.Point(151, 260);
+            this.OptionExitButton.Location = new System.Drawing.Point(166, 259);
             this.OptionExitButton.Name = "OptionExitButton";
             this.OptionExitButton.Size = new System.Drawing.Size(100, 30);
             this.OptionExitButton.TabIndex = 5;
@@ -123,7 +126,7 @@
             // RouteCount
             // 
             this.RouteCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.RouteCount.Location = new System.Drawing.Point(151, 21);
+            this.RouteCount.Location = new System.Drawing.Point(166, 21);
             this.RouteCount.Maximum = new decimal(new int[] {
             7,
             0,
@@ -135,7 +138,7 @@
             0,
             0});
             this.RouteCount.Name = "RouteCount";
-            this.RouteCount.Size = new System.Drawing.Size(68, 24);
+            this.RouteCount.Size = new System.Drawing.Size(60, 24);
             this.RouteCount.TabIndex = 2;
             this.RouteCount.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.RouteCount.Value = new decimal(new int[] {
@@ -146,40 +149,71 @@
             // 
             // AutoParamsGroup
             // 
+            this.AutoParamsGroup.Controls.Add(this.lpkmLabel);
+            this.AutoParamsGroup.Controls.Add(this.kphLabel);
             this.AutoParamsGroup.Controls.Add(this.AutoOptFuelSpend);
             this.AutoParamsGroup.Controls.Add(this.AutoOptMaxSpeedLabel);
             this.AutoParamsGroup.Controls.Add(this.AutoOptFuelSpendLabel);
             this.AutoParamsGroup.Controls.Add(this.AutoOptMaxSpeed);
-            this.AutoParamsGroup.Location = new System.Drawing.Point(22, 12);
+            this.AutoParamsGroup.Location = new System.Drawing.Point(16, 12);
             this.AutoParamsGroup.Name = "AutoParamsGroup";
-            this.AutoParamsGroup.Size = new System.Drawing.Size(229, 105);
+            this.AutoParamsGroup.Size = new System.Drawing.Size(250, 105);
             this.AutoParamsGroup.TabIndex = 7;
             this.AutoParamsGroup.TabStop = false;
             this.AutoParamsGroup.Text = "Параметры автомобиля";
             // 
+            // lpkmLabel
+            // 
+            this.lpkmLabel.AutoSize = true;
+            this.lpkmLabel.Location = new System.Drawing.Point(197, 25);
+            this.lpkmLabel.Name = "lpkmLabel";
+            this.lpkmLabel.Size = new System.Drawing.Size(50, 13);
+            this.lpkmLabel.TabIndex = 6;
+            this.lpkmLabel.Text = "л/100км";
+            // 
+            // kphLabel
+            // 
+            this.kphLabel.AutoSize = true;
+            this.kphLabel.Location = new System.Drawing.Point(197, 67);
+            this.kphLabel.Name = "kphLabel";
+            this.kphLabel.Size = new System.Drawing.Size(31, 13);
+            this.kphLabel.TabIndex = 5;
+            this.kphLabel.Text = "км/ч";
+            // 
             // SearchParamsGroup
             // 
+            this.SearchParamsGroup.Controls.Add(this.label1);
             this.SearchParamsGroup.Controls.Add(this.RouteDispersionText);
             this.SearchParamsGroup.Controls.Add(this.RouteDispertionLabel);
             this.SearchParamsGroup.Controls.Add(this.RouteCountLabel);
             this.SearchParamsGroup.Controls.Add(this.RouteCount);
-            this.SearchParamsGroup.Location = new System.Drawing.Point(22, 123);
+            this.SearchParamsGroup.Location = new System.Drawing.Point(16, 123);
             this.SearchParamsGroup.Name = "SearchParamsGroup";
-            this.SearchParamsGroup.Size = new System.Drawing.Size(229, 100);
+            this.SearchParamsGroup.Size = new System.Drawing.Size(250, 100);
             this.SearchParamsGroup.TabIndex = 8;
             this.SearchParamsGroup.TabStop = false;
             this.SearchParamsGroup.Text = "Параметры поиска";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(226, 65);
+            this.label1.Margin = new System.Windows.Forms.Padding(0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(21, 18);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "%";
+            // 
             // RouteDispersionText
             // 
             this.RouteDispersionText.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.RouteDispersionText.Location = new System.Drawing.Point(151, 62);
+            this.RouteDispersionText.Location = new System.Drawing.Point(166, 62);
             this.RouteDispersionText.Name = "RouteDispersionText";
-            this.RouteDispersionText.Size = new System.Drawing.Size(68, 24);
+            this.RouteDispersionText.Size = new System.Drawing.Size(60, 24);
             this.RouteDispersionText.TabIndex = 3;
-            this.RouteDispersionText.Text = "20%";
+            this.RouteDispersionText.Text = "20";
             this.RouteDispersionText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.RouteDispersionText.TextChanged += new System.EventHandler(this.RouteDispersionText_TextChanged);
             // 
             // RouteDispertionLabel
             // 
@@ -204,7 +238,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(273, 301);
+            this.ClientSize = new System.Drawing.Size(284, 301);
             this.Controls.Add(this.SearchParamsGroup);
             this.Controls.Add(this.AutoParamsGroup);
             this.Controls.Add(this.OptionExitButton);
@@ -244,5 +278,8 @@
         private System.Windows.Forms.Label RouteDispertionLabel;
         private System.Windows.Forms.Label RouteCountLabel;
         private System.Windows.Forms.ToolTip OptionFormTooltips;
+        private System.Windows.Forms.Label lpkmLabel;
+        private System.Windows.Forms.Label kphLabel;
+        private System.Windows.Forms.Label label1;
     }
 }

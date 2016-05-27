@@ -31,7 +31,7 @@ namespace main
         /// </summary>
         private void InitializeComponent()
         {
-            SearchResultTabs = new TabControl();
+            this.SearchResultTabs = new System.Windows.Forms.TabControl();
             this.SuspendLayout();
             // 
             // SearchResultTabs

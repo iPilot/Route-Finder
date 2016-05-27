@@ -10,9 +10,9 @@ namespace RouteFinderLibrary
 {
     public class RouteParams
     {
-        public const int ParamsCount = 4;
-        public const int MaxLength = 10000;
-        public const int MaxFuelCost = 500;
+        public const int ParamsCount = 5;
+        public const int MaxLength = 3000;
+        public const int MaxFuelCost = 100;
         public const int MaxSpeedLimit = 150;
         public const int MaxAddCosts = 10000;
         public int Length { get; }
@@ -20,7 +20,7 @@ namespace RouteFinderLibrary
         public int AddCosts { get; }
         public int SpeedLimit { get; }
         public string Name { get; }
-        public RouteParams(int length, int fcost, int speed, int addcosts, string RoadName = "")
+        public RouteParams(int length, int fcost, int speed, int addcosts, string RoadName = null)
         {
             if (length > 0 && fcost > 0 && addcosts >= 0 && speed >= 0)
             {
@@ -28,6 +28,7 @@ namespace RouteFinderLibrary
                 FuelCost = fcost;
                 AddCosts = addcosts;
                 SpeedLimit = speed;
+                Name = RoadName;
             }
             else
             {
@@ -94,7 +95,8 @@ namespace RouteFinderLibrary
         END_CITY_EMPTY,
         AUTO_PARAMS_NOT_DEFINED,
         DATABASE_IS_EMPTY,
-        ROUTE_CRITERIA_NOT_SELECTED
+        ROUTE_CRITERIA_NOT_SELECTED,
+        ROUTE_NAME_ALREADE_USED,
     }
     public enum DbOperation
     {
@@ -114,6 +116,7 @@ namespace RouteFinderLibrary
     {
         SortedSet<string> Cities;
         Dictionary<Tuple<string, string>, List<RouteParams>> Routes;
+        HashSet<string> RoutesNames;
         public bool DbLoaded { get; private set; }
         int RoutesCount;
         string DbPath;
@@ -126,6 +129,7 @@ namespace RouteFinderLibrary
             DbLoaded = false;
             RoutesCount = 0;
             DbDefaultFileName = "routefinder.dbp";
+            RoutesNames = new HashSet<string>();
         }
         public List<string> GetCitiesList()
         {
@@ -178,8 +182,10 @@ namespace RouteFinderLibrary
             else
                 return (Cities.Add(city) ? RFLActionResult.OK : RFLActionResult.CITY_ALREADY_EXISTS);
         }
-        public RFLActionResult AddRoute(string source, string dest, int len, int cost, int speed, int addcost)
+        public RFLActionResult AddRoute(string source, string dest, int len, int cost, int speed, int addcost, string name = null)
         {
+            if (!string.IsNullOrEmpty(name))
+                if (RoutesNames.Contains(name)) return RFLActionResult.ROUTE_NAME_ALREADE_USED;
             int d = source.CompareTo(dest);
             if (d == 0) return RFLActionResult.ROUTE_SOURCE_EQUALS_DEST;
             if (!Cities.Contains(source) || !Cities.Contains(dest)) return RFLActionResult.SOURCE_OR_DEST_CITY_NOT_EXISTS;
@@ -196,15 +202,19 @@ namespace RouteFinderLibrary
                 if (!Routes.ContainsKey(key))
                 {
                     Routes.Add(key, new List<RouteParams>());
-                    Routes[key].Add(new RouteParams(len, cost, speed, addcost));
+                    Routes[key].Add(new RouteParams(len, cost, speed, addcost, name));
+                    if (!string.IsNullOrEmpty(name))
+                        RoutesNames.Add(name);
                     RoutesCount++;
                     return RFLActionResult.OK;
                 }
                 else
                 {
-                    if (!Routes[key].Exists(x => x.Length == len && x.FuelCost == cost && x.AddCosts == addcost && x.SpeedLimit == speed))
+                    if (!Routes[key].Exists(x => x.Length == len && x.AddCosts == addcost))
                     {
-                        Routes[key].Add(new RouteParams(len, cost, speed, addcost));
+                        Routes[key].Add(new RouteParams(len, cost, speed, addcost, name));
+                        if (!string.IsNullOrEmpty(name))
+                            RoutesNames.Add(name);
                         RoutesCount++;
                         return RFLActionResult.OK;
                     }
@@ -220,6 +230,8 @@ namespace RouteFinderLibrary
             {
                 foreach (var key in Routes.Where(x => x.Key.Item1 == city || x.Key.Item2 == city).ToList())
                 {
+                    foreach (var road in key.Value)
+                        if (!string.IsNullOrEmpty(road.Name)) RoutesNames.Remove(road.Name);
                     Routes.Remove(key.Key);
                     RoutesCount -= key.Value.Count;
                 }
@@ -241,6 +253,8 @@ namespace RouteFinderLibrary
                 else
                 {
                     RoutesCount--;
+                    if (!string.IsNullOrEmpty(route.Options.Name))
+                        RoutesNames.Remove(route.Options.Name);
                     return (Routes[key].RemoveAll(x => x.Length == route.Length && x.SpeedLimit == route.SpeedLimit && x.FuelCost == route.FuelCost && x.AddCosts == route.AddCosts) > 0 ? RFLActionResult.OK : RFLActionResult.ROUTE_NOT_EXISTS);
                 }
             }
@@ -255,10 +269,12 @@ namespace RouteFinderLibrary
             else
                 return (Cities.Add(newcity) && Cities.Remove(city) ? RFLActionResult.OK : RFLActionResult.INVALID_VALUES);
         }
-        public RFLActionResult ModRoute(CRoute route, int newlen, int newfcost, int newspeed, int newaddcost)
+        public RFLActionResult ModRoute(CRoute route, int newlen, int newfcost, int newspeed, int newaddcost, string nname = null)
         {
             int id;
             if (route == null) return RFLActionResult.ROUTE_NOT_EXISTS;
+            if (!string.IsNullOrEmpty(nname) && nname != route.Options.Name)
+                if (RoutesNames.Contains(nname)) return RFLActionResult.ROUTE_NAME_ALREADE_USED;
             var key = new Tuple<string, string>(route.FirstCity, route.SecondCity);
             if (!Routes.ContainsKey(key))
                 return RFLActionResult.ROUTE_NOT_EXISTS;
@@ -268,12 +284,17 @@ namespace RouteFinderLibrary
                 return RFLActionResult.INVALID_VALUES;
             else
             {
-                var tmp = new RouteParams(newlen, newfcost, newspeed, newaddcost);
+                var tmp = new RouteParams(newlen, newfcost, newspeed, newaddcost, nname);
                 if (tmp.Equals(route.Options)) return RFLActionResult.ROUTE_NOT_CHANGED;
-                int k = Routes[key].FindIndex(x => x.Length == tmp.Length && x.SpeedLimit == tmp.SpeedLimit && x.FuelCost == tmp.FuelCost && x.AddCosts == tmp.AddCosts);
+                int k = Routes[key].FindIndex(x => x.Length == tmp.Length && x.AddCosts == tmp.AddCosts);
                 if (k >= 0) return RFLActionResult.SAME_ROUTE_ALREADY_EXISTS;
                 else
                 {
+                    if (route.Options.Name != nname)
+                    {
+                        if (!string.IsNullOrEmpty(route.Options.Name)) RoutesNames.Remove(route.Options.Name);
+                        if (!string.IsNullOrEmpty(nname)) RoutesNames.Add(nname);
+                    }
                     Routes[key][id] = tmp;
                     return RFLActionResult.OK;
                 }
@@ -282,13 +303,14 @@ namespace RouteFinderLibrary
         public RFLActionResult DbLoad(string path)
         {
             string ptr;
+            StreamReader DbReader = null;
             if (string.IsNullOrEmpty(path))
                 return RFLActionResult.DBFILE_NOT_FOUND;
             else
                 DbPath = path;
             try
             {
-                var DbReader = new StreamReader(DbPath, Encoding.UTF8);
+                DbReader = new StreamReader(DbPath, Encoding.UTF8);
                 int cc = int.Parse(DbReader.ReadLine());
                 for(int i = 0; i < cc; i++)
                 {
@@ -310,9 +332,9 @@ namespace RouteFinderLibrary
                         try
                         {
                             int[] values = new int[] { int.Parse(prms[2]), int.Parse(prms[3]), int.Parse(prms[4]), int.Parse(prms[5]) };
-                            AddRoute(prms[0], prms[1], values[0], values[1], values[2], values[3]);
+                            AddRoute(prms[0], prms[1], values[0], values[1], values[2], values[3], prms[6]);
                         }
-                        catch (FormatException)
+                        catch (Exception)
                         {
                             continue;
                         }
@@ -330,6 +352,7 @@ namespace RouteFinderLibrary
             catch (FormatException)
             {
                 DbLoaded = false;
+                if (DbReader != null) DbReader.Close();
                 return RFLActionResult.INVALID_FILE_FORMAT;
             }
             catch (ArgumentException)
@@ -354,7 +377,7 @@ namespace RouteFinderLibrary
                 DbWriter.WriteLine(RoutesCount);
                 foreach(var rt in Routes)
                     foreach(var route in rt.Value)
-                        DbWriter.WriteLine(string.Format("{0},{1},{2},{3},{4},{5}", rt.Key.Item1, rt.Key.Item2, route.Length, route.FuelCost, route.SpeedLimit, route.AddCosts));
+                        DbWriter.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6}", rt.Key.Item1, rt.Key.Item2, route.Length, route.FuelCost, route.SpeedLimit, route.AddCosts, route.Name));
                 DbWriter.Close();
             }
         }
@@ -367,7 +390,7 @@ namespace RouteFinderLibrary
     {
         public string FirstCity { get; }
         public string SecondCity { get; }
-        public RouteParams Options { get; }
+        public RouteParams Options;
         public int Length
         {
             get { return Options.Length; }
@@ -384,8 +407,12 @@ namespace RouteFinderLibrary
         {
             get { return Options.AddCosts; }
         }
+        public string Name
+        {
+            get { return Options.Name; }
+        }
 
-        public CRoute(string city1, string city2, int length, int fcost, int speed, int addcosts)
+        public CRoute(string city1, string city2, string name, int length, int fcost, int speed, int addcosts)
         {
             if (city1.CompareTo(city2) > 0)
             {
@@ -397,18 +424,23 @@ namespace RouteFinderLibrary
                 FirstCity = city1;
                 SecondCity = city2;
             }
-            Options = new RouteParams(length, fcost, speed, addcosts);
+            Options = new RouteParams(length, fcost, speed, addcosts, name);
         }
         public override string ToString()
         {
             if (Options != null)
-                return string.Format("{6}{0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)", FirstCity, SecondCity, Options.Length, Options.FuelCost, Options.SpeedLimit, Options.AddCosts, (string.IsNullOrEmpty(Options.Name) ? "" : Options.Name + ": "));
+            {
+                if (string.IsNullOrEmpty(Options.Name))
+                    return string.Format("{0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)", FirstCity, SecondCity, Length, FuelCost, SpeedLimit, AddCosts);
+                else
+                    return string.Format("{0}: {1} - {2}", Name, FirstCity, SecondCity);
+            }
             else
                 return "Invalid route";
         }
         public static CRoute Create(Tuple<string, string> key, RouteParams value)
         {
-           return new CRoute(key.Item1, key.Item2, value.Length, value.FuelCost, value.SpeedLimit, value.AddCosts);
+           return new CRoute(key.Item1, key.Item2, value.Name, value.Length, value.FuelCost, value.SpeedLimit, value.AddCosts);
         }
     }
     public class __LogProcessor
@@ -652,7 +684,7 @@ namespace RouteFinderLibrary
         public const int MaxRows = 50;
         protected string TimeFormat;
         protected string[] RowFormats;
-        protected static int[] ArgsCounts = { 1, 1, 2, 6, 6, 10 };  
+        protected static int[] ArgsCounts = { 1, 1, 2, 7, 7, 12 };  
         public abstract void AddRow(DbOperation action, params object[] args);
         public LogProcessor()
         {
@@ -684,10 +716,10 @@ namespace RouteFinderLibrary
             RowFormats = new string[] { "Добавлен город: {0}",
                                         "Удален город: {0}",
                                         "Изменен город: {0} на {1}",
-                                        "Добавлена дорога: {0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)",
-                                        "Удалена дорога: {0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)",
-                                        "Изменены параметры дороги {0} - {1}: ({2} км, {3} руб/л, {4} км/ч, {5} руб) на ({6} км, {7} руб/л, {8} км/ч, {9} руб)"};
-            if (OutLog != null)
+                                        "Добавлена дорога: {6} {0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)",
+                                        "Удалена дорога: {6} {0} - {1} ({2} км, {3} руб/л, {4} км/ч, {5} руб)",
+                                        "Изменены параметры дороги {10} {0} - {1}: ({2} км, {3} руб/л, {4} км/ч, {5} руб) на ({11}, {6} км, {7} руб/л, {8} км/ч, {9} руб)"};
+            if (OutLog != null && OutLog.Loaded)
             {
                 LocalLog.Lines = GetLocalRows(OutLog);
                 LocalLog.AppendText("\n");
@@ -781,7 +813,7 @@ namespace RouteFinderLibrary
         }
         bool LoadFromFile(string path)
         {
-            try
+            if (File.Exists(LogPath))
             {
                 var LogReader = new StreamReader(LogPath, Encoding.UTF8);
                 data = new string[MaxRows];
@@ -797,20 +829,15 @@ namespace RouteFinderLibrary
                 LogReader.Close();
                 return true;
             }
-            catch (Exception)
-            {
+            else
                 return false;
-            }
         }
         public void UploadLog()
         {
-            if (Loaded)
-            {
-                var LogWriter = new StreamWriter(LogPath, true, Encoding.UTF8);
-                foreach (string row in newdata)
-                    LogWriter.WriteLine(row);
-                LogWriter.Close();
-            }
+            var LogWriter = new StreamWriter(LogPath, true, Encoding.UTF8);
+            foreach (string row in newdata)
+                LogWriter.WriteLine(row);
+            LogWriter.Close();
         }
         public OuterLogProcessor(string path)
         {
@@ -822,9 +849,9 @@ namespace RouteFinderLibrary
             RowFormats = new string[] { "add,c,{0}",
                                         "del,c,{0}",
                                         "mod,c,{0},{1}",
-                                        "add,r,{0},{1},{2},{3},{4},{5}",
-                                        "del,r,{0},{1},{2},{3},{4},{5}",
-                                        "mod,r,{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}"};
+                                        "add,r,{0},{1},{2},{3},{4},{5},{6}",
+                                        "del,r,{0},{1},{2},{3},{4},{5},{6}",
+                                        "mod,r,{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}"};
         }
     }
 
@@ -906,22 +933,21 @@ namespace RouteFinderLibrary
         }
         bool NoCycle(string city)
         {
-            return Cities.Contains(city);
+            return !Cities.Contains(city);
         }
         public bool CheckRoute(WorkDbRoute other, Tuple<string, __RoadParams> road, double disp)
         {
             return NoCycle(road.Item1) && other.CheckDisp(this, road.Item2, disp);
         }
     }
-
     public class WorkDbItem
     {
         public bool Used;
         int RouteCount;
         double Dispersion;
+
         public List<WorkDbRoute> Routes { get; private set; }
         public List<Tuple<string, __RoadParams>> Roads { get; private set; }
-
         public WorkDbItem(int rc, double disp)
         {
             Routes = new List<WorkDbRoute>();
@@ -930,7 +956,6 @@ namespace RouteFinderLibrary
             RouteCount = rc;
             Dispersion = disp;
         }
-
         public bool MergeRoutes(WorkDbItem other, Tuple<string, __RoadParams> road)
         {
             int i = 0, j = 0;
@@ -984,12 +1009,10 @@ namespace RouteFinderLibrary
             return merged;
         }
     }
-
     public class WorkDB
     {
         public string Start { get; }
         public string Finish { get; }
-
         public Dictionary<string, WorkDbItem> Database { get; }
 
         public WorkDB(RFDatabase source, AutoParams auto, string FirstCity, string SecondCity, int criteria, int route_count, double disp)
@@ -1016,7 +1039,6 @@ namespace RouteFinderLibrary
                      else return x.Item2.CompareTo(y.Item2);
                  });
         }
-
         public void FindRoutes(string city)
         {
             if (city == Start)

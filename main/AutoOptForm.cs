@@ -35,7 +35,6 @@ namespace main
         private void AutoOptForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             FMain.Enabled = true;
-            FMain.refresh();
         }
 
         private void AutoOptSetButton_Click(object sender, EventArgs e)
@@ -102,12 +101,6 @@ namespace main
             OptionFormTooltips.SetToolTip(AutoOptFuelSpendLabel, "Количество топлива, потребляемое автомобилем для прохода 100 километров");
             OptionFormTooltips.SetToolTip(AutoOptMaxSpeedLabel, "Максимальная или средняя скорость автомобиля");
             OptionFormTooltips.SetToolTip(RouteCountLabel, "Количество вариантов пути (от 1 до 7)");
-        }
-
-        private void RouteDispersionText_TextChanged(object sender, EventArgs e)
-        {
-            if (!RouteDispersionText.Text.EndsWith("%"))
-                RouteDispersionText.Text += "%";
         }
     }
 }

@@ -48,7 +48,7 @@
             // SearchButton
             // 
             this.SearchButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.SearchButton.Location = new System.Drawing.Point(91, 200);
+            this.SearchButton.Location = new System.Drawing.Point(91, 223);
             this.SearchButton.Name = "SearchButton";
             this.SearchButton.Size = new System.Drawing.Size(100, 43);
             this.SearchButton.TabIndex = 0;
@@ -91,6 +91,7 @@
             // 
             // StartPointBox
             // 
+            this.StartPointBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.StartPointBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.StartPointBox.FormattingEnabled = true;
             this.StartPointBox.IntegralHeight = false;
@@ -101,6 +102,7 @@
             // 
             // EndPointBox
             // 
+            this.EndPointBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.EndPointBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.EndPointBox.FormattingEnabled = true;
             this.EndPointBox.IntegralHeight = false;
@@ -160,7 +162,7 @@
             // 
             this.MainFormErrorLabel.AutoSize = true;
             this.MainFormErrorLabel.ForeColor = System.Drawing.Color.Red;
-            this.MainFormErrorLabel.Location = new System.Drawing.Point(101, 255);
+            this.MainFormErrorLabel.Location = new System.Drawing.Point(85, 194);
             this.MainFormErrorLabel.Name = "MainFormErrorLabel";
             this.MainFormErrorLabel.Size = new System.Drawing.Size(0, 13);
             this.MainFormErrorLabel.TabIndex = 10;
